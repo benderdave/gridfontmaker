@@ -5,14 +5,14 @@ import javax.swing.{JPanel, BoxLayout}
 import javax.swing.border.EmptyBorder
 
 // ----------------------------------------------------------------------------
-class AlphabetPanel extends JPanel with GlobalFont {
+class AlphabetPanel extends JPanel {
   setBackground(Color.gray)
-  val textPanel = new GridfontTextArea(9.0, ('a' to 'z').mkString)
-  add(textPanel)
+  val textArea = new GridfontTextArea(9.0, ('a' to 'z').mkString)
+  add(textArea)
 }
 
 // ----------------------------------------------------------------------------
-class AlphabetAndNameArea extends JPanel with GlobalFont {
+class AlphabetAndNameArea extends JPanel {
   setBackground(Color.gray)
   setLayout(new BoxLayout(this, BoxLayout.Y_AXIS))
   setBorder(new EmptyBorder(0, 0, 0, 0))

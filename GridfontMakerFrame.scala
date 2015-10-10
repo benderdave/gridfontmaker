@@ -20,13 +20,13 @@ class GridfontMakerFrame(var filename: String) extends JFrame
     with WindowListener with GlobalFont {
   setBackground(Color.black)
   val alphAndNameArea = new AlphabetAndNameArea
-  val textPanel = new GridfontTextArea(14.0, gfont.example_text, true, true)
-  textPanel.obs.addObserver(new Observer with GlobalFont {
+  val textPanel = new ExampleTextPanel(14.0, gfont.example_text)
+  textPanel.textArea.obs.addObserver(new Observer with GlobalFont {
     override def update(o: Observable, text: Any): Unit = 
       gfont.example_text = text.asInstanceOf[String]
   })
   val editPanel = new EditPanel(
-    Seq(alphAndNameArea.alphPanel.textPanel, textPanel)
+    Seq(alphAndNameArea.alphPanel.textArea, textPanel.textArea)
   )
   add(alphAndNameArea, BorderLayout.NORTH)
   add(editPanel, BorderLayout.CENTER)
@@ -113,7 +113,7 @@ class GridfontMakerFrame(var filename: String) extends JFrame
 
   def newGrid: Unit = {
     alphAndNameArea.clear
-    textPanel.clear
+    textPanel.textArea.clear
     editPanel.clearAll
     filename = ""
     gfont.clear
@@ -137,7 +137,7 @@ class GridfontMakerFrame(var filename: String) extends JFrame
         GridfontMakerFrame.gfont = gfont
         alphAndNameArea.namePanel.setFontName(gfont.name, true)
         savedFontState = toJson(gfont)
-        textPanel.setText(gfont.example_text, true)
+        textPanel.textArea.setText(gfont.example_text, true)
         actionStack.reset
         repaint()
       } catch {

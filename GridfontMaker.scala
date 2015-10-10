@@ -1,13 +1,16 @@
 // TODO
 //  - EditableLetter
+//
 //  - GridfontTextArea
 //    - fix up/down for centered text
+//    - add highlight/cut/paste
 //
 //  - maybe save example text font-size to .gf
 //
-// *- test on mac/linux/windows
+//  - check all class imports and with GlobalFont
+//
+//  - test on mac/linux/windows
 //    - jwrapper worked on windows xp, 1/3 on mac os, couldn't try win>xp
-// *- put it up on GitHub
 //
 package farg
 

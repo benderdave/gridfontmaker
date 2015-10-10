@@ -198,7 +198,7 @@ case class ExampleTextChangeAction(f: () => Unit) extends Action
   }
 
   def undo: Action = {
-    GridfontMakerFrame.gui.textPanel.setText(before, true)
+    GridfontMakerFrame.gui.textPanel.textArea.setText(before, true)
     this
   }
 
@@ -208,10 +208,10 @@ case class ExampleTextChangeAction(f: () => Unit) extends Action
   }
 }
 
-case class SizeChangeAction(textPanel: GridfontTextArea, f: () => Unit)
+case class SizeChangeAction(textArea: GridfontTextArea, f: () => Unit)
     extends Action {
   override val mergable = true
-  var before = textPanel.gfontSize
+  var before = textArea.gfontSize
   def text: String = "change font size"
 
   def doit(firstTime: Boolean): Action = {
@@ -220,10 +220,10 @@ case class SizeChangeAction(textPanel: GridfontTextArea, f: () => Unit)
   }
 
   def undo: Action = {
-    textPanel.setSize(before)
-    textPanel.calculatePreferredSize
-    textPanel.repaint()
-    textPanel.getParent().revalidate
+    textArea.setSize(before)
+    textArea.calculatePreferredSize
+    textArea.repaint()
+    textArea.getParent().revalidate
     this
   }
 

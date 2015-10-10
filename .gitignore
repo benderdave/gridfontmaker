@@ -6,6 +6,5 @@ tidbits/
 .DS_Store
 _build
 gridfontmaker
-gridfontmaker.jar
 runfsc
 runscala

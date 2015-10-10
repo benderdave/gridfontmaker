@@ -5,6 +5,7 @@ import java.awt.event.{MouseMotionListener, MouseEvent, MouseListener,
  KeyListener, KeyEvent, FocusListener, FocusEvent}
 import java.awt.geom.Line2D
 import javax.swing.JPanel
+import javax.swing.border.EmptyBorder
 import java.util.{Observer, Observable}
 import java.awt.RenderingHints._
 
@@ -14,6 +15,14 @@ class ObservableText extends Observable {
     setChanged
     notifyObservers(text)
   }
+}
+
+class ExampleTextPanel(initialSize: Double = 16.0, val initialText: String)
+    extends JPanel {
+  setBackground(Color.gray)
+  val textArea = new GridfontTextArea(initialSize, initialText, true, true)
+  setBorder(new EmptyBorder(10, 10, 10, 10))
+  add(textArea)
 }
 
 class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
