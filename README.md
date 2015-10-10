@@ -7,14 +7,16 @@ Group](http://cogsci.indiana.edu)
 (FARG) at Indiana University.
 
 Gridfonts are stripped-down fonts designed under extreme
-constraints. The 26 lowercase English letters make up a complete gridfont -- no
-capitals, punctuation, or numerals,
+constraints. The 26 lowercase English letters make up a complete gridfont
+&emdash no
+capitals, punctuation, or numerals &emdash
 and each is created on a 3x7 grid of anchors. Only neighboring anchors can be
 connected (diagonals are allowed), and each stroke is a simple line, without
 decorations or variations in thickness. 
 
-![Image explaining gridfont domain]
-(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/gridfont-defn.png)
+<!-- ![Image explaining gridfont domain]
+(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/gridfont-defn.png) -->
+<img align="center" src="https://raw.githubusercontent.com/benderdave/gridfontmaker/master/gridfont-defn.png" alt="Image explaining the gridfont domain">
 
 Even with these radical
 restrictions many beautiful fonts have been created. The domain's severly restricted nature
@@ -24,21 +26,21 @@ forces a font designer quickly into radical experimentation and exploration.
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/benzene-etc.png)
 
 The gridfont domain is a micro-domain for studying the cognitive processes
-that underlay thinking. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
-Rehling and Gary McGraw. That said, we've found that designing gridfonts is a
+that underlie thinking. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
+Rehling (and Gary McGraw). That said, we've found that designing gridfonts is a
 uniquely creative activity that stands on its own. 
 
 GridfontMaker is provided to
 help anyone interested in gridfonts create and share them.
 
-# Building
+# Building and Running
 
 Right now the only way to build GridfontMaker is on a unix-like system with
 *make*, *java*, and *scala*. 
 
 * Clone the source
 * Make sure you have a recent version of both java and scala
-* Put the dependencies in ./lib3rd
+* Locate, download, and put the following dependencies in ./lib3rd
   * genson-1.3.jar
   * json-simple-1.1.1.jar
   * genson-scala_2.11-1.3.jar
