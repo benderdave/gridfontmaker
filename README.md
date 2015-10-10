@@ -18,7 +18,7 @@ decorations or variations in thickness.
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/gridfont-defn.png)
 
 Even with these radical
-restrictions many beautiful fonts have been created. The domain's severly restricted nature
+restrictions many beautiful fonts have been created. The domain's severely restricted nature
 forces a font designer quickly into radical experimentation and exploration.
 The following were created by Douglas Hofstadter.
 
@@ -35,7 +35,7 @@ help anyone interested in gridfonts create and share them.
 
 # Running
 
-Right now you can run GridfontMaker (without comiliing it yourself) in two ways,
+Right now you can run GridfontMaker (without compiling it yourself) in two ways,
 from a wrapped application
 specific to your operating system, or straight from the **jar** file.
 
@@ -45,10 +45,13 @@ Download the appropriate link for your OS, install the app and run it as you
 would a normal program. This is the easiest option because you don't have to
 install anything else.
 
-fixme: add links
+[MacOS](https://www.dropbox.com/s/pokqo0w6czi0nop/GridfontMaker-macos.dmg?dl=0)
+[Linux](https://www.dropbox.com/s/69jaz07tbev31ff/GridfontMaker-linux-x64.tar?dl=0)
+[Windows 64-bit](https://www.dropbox.com/s/4vosu1i7j9yth77/GridfontMaker-windows-x64.exe?dl=0)
+[Windows 32-bit](https://www.dropbox.com/s/kgqtc9gq70ew0th/GridfontMaker-windows-i586.exe?dl=0)
 
 Please let me know if any of these don't work for you. I only have one or two 
-sytems to test on.
+sytems to test on, and no installations of windows.
 
 ## Using java
 
@@ -82,7 +85,7 @@ Example fonts are included in the "fonts" directory.
 
 # Problems
 
-If you have any problems, questions, bugreports, requests, or comments, feel free to email me at
+If you have any problems, questions, bug-reports, requests, or comments, feel free to email me at
 dcbender@indiana.edu. (However, I can't promise I'll be quick to respond, as
 I'm working on my dissertation.) If you create any interesting fonts, please
 share them!
