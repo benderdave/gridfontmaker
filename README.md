@@ -8,8 +8,8 @@ Group](http://cogsci.indiana.edu)
 
 Gridfonts are stripped-down fonts designed under extreme
 constraints. The 26 lowercase English letters make up a complete gridfont
-&mdash no
-capitals, punctuation, or numerals &mdash
+&mdash; no
+capitals, punctuation, or numerals &mdash;
 and each is created on a 3x7 grid of anchors. Only neighboring anchors can be
 connected (diagonals are allowed), and each stroke is a simple line, without
 decorations or variations in thickness. 
