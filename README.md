@@ -23,8 +23,9 @@ Even with these radical
 restrictions many beautiful fonts have been created. The domain's severly restricted nature
 forces a font designer quickly into radical experimentation and exploration.
 
-![Sampling of gridfonts]
-(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/benzene-etc.png)
+<!-- ![Sampling of gridfonts]
+(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/benzene-etc.png) -->
+<div style="text-align:center"><img src ="https://raw.githubusercontent.com/benderdave/gridfontmaker/master/benzene-etc.png" /></div>
 
 The gridfont domain is a micro-domain for studying the cognitive processes
 that underlie thinking. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
