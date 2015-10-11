@@ -45,13 +45,13 @@ Download the appropriate link for your OS and run it as you
 would a normal program. This is the easiest option because you don't have to
 install anything else.
 
-[MacOS](https://www.dropbox.com/s/pokqo0w6czi0nop/GridfontMaker-macos.dmg?dl=0)
+[MacOS](https://www.dropbox.com/s/pokqo0w6czi0nop/GridfontMaker-macos64-offline.dmg?dl=0)
 
-[Linux](https://www.dropbox.com/s/69jaz07tbev31ff/GridfontMaker-linux-x64.tar?dl=0)
+[Linux](https://www.dropbox.com/s/69jaz07tbev31ff/GridfontMaker-linux64-offline.tar?dl=0)
 
-[Windows 64-bit](https://www.dropbox.com/s/4vosu1i7j9yth77/GridfontMaker-windows-x64.exe?dl=0)
+[Windows 64-bit](https://www.dropbox.com/s/4vosu1i7j9yth77/GridfontMaker-windows64-offline.exe?dl=0)
 
-[Windows 32-bit](https://www.dropbox.com/s/kgqtc9gq70ew0th/GridfontMaker-windows-i586.exe?dl=0)
+[Windows 32-bit](https://www.dropbox.com/s/kgqtc9gq70ew0th/GridfontMaker-windows32-offline.exe?dl=0)
 
 Please let me know if any of these don't work for you. I only have one or two 
 sytems to test on, and no installations of windows.
