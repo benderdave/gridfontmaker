@@ -148,8 +148,9 @@ class GridfontMakerFrame(var filename: String) extends JFrame
 }
 
 object GridfontMakerFrame {
-  val lineStroke = new BasicStroke(3.5f, CAP_ROUND, JOIN_BEVEL)
-  val smallLineStroke = new BasicStroke(2.0f, CAP_ROUND, JOIN_BEVEL)
+  val lineStroke = new BasicStroke(4.0f, CAP_ROUND, JOIN_BEVEL)
+  val largeLineStroke = new BasicStroke(5.5f, CAP_ROUND, JOIN_BEVEL)
+  val smallLineStroke = new BasicStroke(2.3f, CAP_ROUND, JOIN_BEVEL)
 
   var gfont: Font = null
   var gui: GridfontMakerFrame = null

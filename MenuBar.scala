@@ -58,6 +58,21 @@ class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
   val sortItem = MenuItem("Sort", () =>
     actions.add(GridSortAction(gui.editPanel, () => gui.editPanel.sortAll)))
   gridMenu.add(sortItem)
+  gridMenu.addSeparator
+
+  val toggleShowAnchorsItem = MenuItem("Toggle displaying anchors", () => {
+    val p = gui.editPanel
+    p.showAnchors = !p.showAnchors
+    p.repaint()
+  })
+  gridMenu.add(toggleShowAnchorsItem)
+
+  val toggleShowCentralZoneItem = MenuItem("Toggle highlighting central zone", () => {
+    val p = gui.editPanel
+    p.showCentralZone = !p.showCentralZone
+    p.repaint()
+  })
+  gridMenu.add(toggleShowCentralZoneItem)
 
   var helpFrame: Option[HelpFrame] = None
   val helpItem = MenuItem("Help", () => {

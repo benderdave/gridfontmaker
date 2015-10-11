@@ -5,7 +5,7 @@ import java.awt.{Dimension, Color, Font=>AWTFont, Graphics2D, Graphics,
  Rectangle}
 import java.awt.event.{MouseMotionListener, MouseEvent, MouseListener,
  KeyListener, KeyEvent}
-import java.awt.geom.{Ellipse2D, Line2D, Point2D}
+import java.awt.geom.{Ellipse2D, Line2D, Point2D, Rectangle2D}
 import java.awt.RenderingHints._
 import javax.swing.{JPanel, JPopupMenu}
 import java.util.{Observer, Observable}
@@ -40,6 +40,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
 
   val strokeMap: Map[Line2D, (Int,Int)] = Map.empty
   var hitStroke: Option[(Int,Int)] = None
+  var hitPotentialStroke: Option[(Int,Int)] = None
 
   var showStrokeOrder: Boolean = false
 
@@ -185,26 +186,60 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     if (oldHitStroke != v) repaint()
   }
 
+  def setHitPotentialStroke(v: Option[(Int,Int)]): Unit = {
+    val oldHitPotentialStroke = hitPotentialStroke
+    hitPotentialStroke = v
+    if (oldHitPotentialStroke != v) repaint()
+  }
+
+  def getOtherEndOfPotentialStroke(x: Int, y: Int, start: Int): Option[Int] = {
+    val (startx, starty) = getAnchorPos(start)
+    val bydist = (0 until NumAnchors).filter( anchor =>
+      (start != anchor) && areNeighbors(start, anchor)
+    ).map { anchorIdx =>
+      val (anchorx, anchory) = getAnchorPos(anchorIdx)
+      val seg = new Line2D.Double(startx, starty, anchorx, anchory)
+      (seg.ptSegDist(x, y), anchorIdx)
+    }.filter(_._1 < lineSelectDist)
+    if (bydist.nonEmpty) Some(bydist.min._2) else None
+  }
+
   def detectMouseHit(x: Int, y: Int): Unit = {
-    // look for anchor hit first, then stroke hit, then hit on bottom area
-    val hit = anchorMap.map {
+    // look for anchor hit first, then existing stroke hit, then potential
+    // stroke hit, and finally hit on bottom area
+    val anchorDistances = anchorMap.map {
       case (p:Point2D, i:Int) => (p.distance(x, y), i)
-    }.filter(_._1 < anchorSelectDist)
-    if (hit.nonEmpty) {
-      setHitAnchorIndex(Some(hit.min._2))
+    }
+    val anchorHit = anchorDistances.filter(_._1 < anchorSelectDist)
+    if (anchorHit.nonEmpty) {
+      setHitAnchorIndex(Some(anchorHit.min._2))
       setHitStroke(None)
+      setHitPotentialStroke(None)
+      up.setSelected(this, false)
     } else {
       setHitAnchorIndex(None)
       val strokeHit = strokeMap.map {
-        case (l:Line2D, i:(Int,Int)) => (l.ptSegDist(x, y), i)
+        case (line: Line2D, i:(Int,Int)) => (line.ptSegDist(x, y), i)
       }.filter(_._1 < lineSelectDist)
       if (strokeHit.nonEmpty) {
         setHitStroke(Some(strokeHit.min._2))
+        setHitPotentialStroke(None)
+        up.setSelected(this, false)
       } else {
         setHitStroke(None)
-        val r = new Rectangle(0, getHeight-anchorBottomPad, getWidth,
-          anchorBottomPad)
-        up.setSelected(this, r.contains(x, y))
+        val closestAnchor = 
+          if (anchorDistances.nonEmpty) anchorDistances.min._2
+          else 0 // FIXME: why do I have to do this?
+        val otherEnd = getOtherEndOfPotentialStroke(x, y, closestAnchor)
+        if (otherEnd.nonEmpty) {
+          setHitPotentialStroke(Some(closestAnchor, otherEnd.get))
+          up.setSelected(this, false)
+        } else {
+          setHitPotentialStroke(None)
+          val r = new Rectangle(0, getHeight-anchorBottomPad, getWidth,
+            anchorBottomPad)
+          up.setSelected(this, r.contains(x, y))
+        }
       }
     }
   }
@@ -229,10 +264,18 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   override def mouseClicked(e: MouseEvent): Unit = {
     val (x,y) = (e.getX, e.getY)
     if (hitStroke.nonEmpty) {
+      val (start, end) = hitStroke.get
       actions.add(StrokeAction(this, () => {
-        val (start, end) = hitStroke.get
         letter.removeStroke(start, end)
         setHitStroke(None)
+        observableLetter.changed()
+        repaint()
+      }))
+    } else if (hitPotentialStroke.nonEmpty) {
+      val (start, end) = hitPotentialStroke.get
+      actions.add(StrokeAction(this, () => {
+        letter.addStroke(start, end)
+        setHitPotentialStroke(None)
         observableLetter.changed()
         repaint()
       }))
@@ -246,6 +289,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       setDragLineEnd(None)
       setHitAnchorIndex(None)
       setHitStroke(None)
+      setHitPotentialStroke(None)
     }
     up.setSelected(this, false)
   }
@@ -254,6 +298,8 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     setDragLineStart(
       if (hitAnchorIndex.nonEmpty) Some(getAnchorPos(hitAnchorIndex.get))
       else None)
+    if (hitAnchorIndex.nonEmpty)
+      setHitPotentialStroke(None)
     if (up.isSelected(this)) {
       up.setDraggingLetter(this, true, 
         if (up.shiftPressed) DRAGMOVE else DRAGCOPY, e.getX, e.getY)
@@ -303,13 +349,16 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     g2.drawString(letter.ch, xpos, ypos)
   }
 
+  def colStep = (getWidth()-2*anchorColPad) / NumCols
+  def rowStep = (getHeight()-2*anchorRowPad-anchorBottomPad) / NumRows
+
   def getAnchorPos(index: Int): (Int,Int) = {
-    val rowStep = (getHeight()-2*anchorRowPad-anchorBottomPad) / NumRows
-    val rowPad = rowStep/2
-    val colStep = (getWidth()-2*anchorColPad) / NumCols
-    val colPad = colStep/2
+    val rStep = rowStep
+    val rowPad = rStep/2
+    val cStep = colStep
+    val colPad = cStep/2
     val (row, col) = getRowCol(index)
-    (anchorColPad+colPad+col*colStep, anchorRowPad+rowPad+row*rowStep)
+    (anchorColPad+colPad+col*cStep, anchorRowPad+rowPad+row*rStep)
   }
 
   def getStrokesBetween(startIdx: Int, endIdx: Int): Seq[(Int,Int)] = {
@@ -331,6 +380,14 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     }
   }
 
+  def areNeighbors(startIdx: Int, endIdx: Int): Boolean = {
+    val (startRow, startCol) = getRowCol(startIdx)
+    val (endRow, endCol) = getRowCol(endIdx)
+    val (rowAbsDelta, colAbsDelta) = 
+      (Math.abs(endRow - startRow), Math.abs(endCol - startCol))
+    rowAbsDelta <= 1 && colAbsDelta <= 1
+  }
+
   def canConnect(startIdx: Int, endIdx: Int): Boolean = {
     val (startRow, startCol) = getRowCol(startIdx)
     val (endRow, endCol) = getRowCol(endIdx)
@@ -342,29 +399,52 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     (startIdx != endIdx) && (neighbor || diagonal || straight)
   }
 
+  def paintCentralZone(g2: Graphics2D): Unit = {
+    val centerRow = NumRows/2
+    val centralTopLeft = rowColToIndex(centerRow-1, 0)
+    val centralLowerRight = rowColToIndex(centerRow+1, NumCols-1)
+    val (_, y) = getAnchorPos(centralTopLeft)
+    g2.setColor(new Color(37,35,38))
+    g2.fill(new Rectangle2D.Double(0, y, getWidth, colStep*2))
+  }
+
   def paintAnchors(g2: Graphics2D): Unit = {
     anchorMap.clear
     g2.setColor(Color.gray)
     for (index <- 0 until NumAnchors) {
       val (x, y) = getAnchorPos(index)
       anchorMap(new Point2D.Double(x,y)) = index
-      if (hitAnchorIndex.nonEmpty &&
-          ((hitAnchorIndex.get == index) ||
-           (dragLineStart.nonEmpty && canConnect(index, hitAnchorIndex.get)))) {
-        g2.setColor(Color.red)
-        g2.fill(new Ellipse2D.Double(x-hlAnchorSize/2, y-hlAnchorSize/2,
-          hlAnchorSize, hlAnchorSize))
-        g2.setColor(Color.gray)
-      } else {
-        g2.fill(new Ellipse2D.Double(x-anchorSize/2, y-anchorSize/2,
-          anchorSize, anchorSize))
+      if (up.showAnchors) {
+        if (hitAnchorIndex.nonEmpty &&
+            ((hitAnchorIndex.get == index) ||
+             (dragLineStart.nonEmpty && 
+              canConnect(index, hitAnchorIndex.get)))) {
+          g2.setColor(Color.red)
+          g2.fill(new Ellipse2D.Double(x-hlAnchorSize/2, y-hlAnchorSize/2,
+            hlAnchorSize, hlAnchorSize))
+          g2.setColor(Color.gray)
+        } else {
+          g2.fill(new Ellipse2D.Double(x-anchorSize/2, y-anchorSize/2,
+            anchorSize, anchorSize))
+        }
       }
     }
   }
 
   def paintStrokes(g2: Graphics2D): Unit = {
     strokeMap.clear
+
+    if (hitPotentialStroke.nonEmpty) {
+      g2.setStroke(largeLineStroke)
+      val (start, end) = hitPotentialStroke.get
+      val (startx, starty) = getAnchorPos(start)
+      val (endx, endy) = getAnchorPos(end)
+      g2.setColor(new Color(70, 70, 70))
+      g2.draw(new Line2D.Double(startx, starty, endx, endy))
+    }
+
     g2.setStroke(lineStroke)
+
     var i = 1
     for ((start, end) <- letter.getStrokes) {
       val (startx, starty) = getAnchorPos(start)
@@ -403,6 +483,8 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     val g2 = g.asInstanceOf[Graphics2D]
     g2.setRenderingHint(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON)
     g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON)
+    if (up.showCentralZone)
+      paintCentralZone(g2)
     paintAnchors(g2)
     paintStrokes(g2)
     paintDragLine(g2)

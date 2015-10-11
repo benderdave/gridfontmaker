@@ -6,28 +6,28 @@ by Douglas Hofstadter and the members of the [Fluid Analogies Research
 Group](http://cogsci.indiana.edu) 
 (FARG) at Indiana University.
 
-Gridfonts are stripped-down fonts designed under extreme
+Gridfonts are stripped-down typefaces designed under extreme
 constraints. The 26 lowercase English letters make up a complete gridfont
 &mdash; no
-capitals, punctuation, or numerals &mdash;
+capitals, punctuation, or numerals are included &mdash;
 and each is created on a 3x7 grid of anchors. Only neighboring anchors can be
-connected (diagonals are allowed), and each stroke is a simple line, without
+connected (45-degree diagonals are allowed), and each stroke is a simple line, without
 decorations or variations in thickness. 
 
 ![Image explaining gridfont domain]
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/gridfont-defn.png)
 
-Even with these radical
-restrictions many beautiful fonts have been created. The domain's severely restricted nature
+Even under these radical
+restrictions many interesting fonts have been created. The domain's severely restricted nature
 forces a font designer quickly into radical experimentation and exploration.
-The following were created by Douglas Hofstadter.
+The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 
 ![Sampling of gridfonts]
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/benzene-etc.png)
 
 The gridfont domain is a micro-domain intended for studying the cognitive process
 that underlies most thinking: analogy. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
-Rehling (and Gary McGraw). That said, we've found that designing gridfonts is a
+Rehling and Gary McGraw. That said, we've found that designing gridfonts is a
 uniquely creative activity that stands on its own. 
 
 GridfontMaker is provided to
@@ -41,7 +41,7 @@ specific to your operating system, or straight from the **jar** file.
 
 ## Pre-built apps
 
-Download the appropriate link for your OS, install the app and run it as you
+Download the appropriate link for your OS and run it as you
 would a normal program. This is the easiest option because you don't have to
 install anything else.
 

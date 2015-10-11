@@ -12,7 +12,7 @@ class NamePanel extends JPanel with GlobalFont with GlobalActionStack {
 
   setBackground(Color.gray)
   setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0))
-  val defaultText = "type name here"
+  val defaultText = "unnamed font by unknown author"
   val initialText = if (gfont.name == "") defaultText else gfont.name
   val nameField = TextField(initialText, 40, n => {
     val newName = n.filter(c => c.isLetterOrDigit || c.isSpaceChar || 

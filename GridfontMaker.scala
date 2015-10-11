@@ -1,16 +1,27 @@
 // TODO
 //  - EditableLetter
+//    - 'r' to rotate by 180 degrees around center
+//   *- 1-6 to select horizontal extent of letter
+//    - maybe animate history for each letter
+//
+//  - Grid
+//    - optional three column layout option
 //
 //  - GridfontTextArea
+//   *- support for per-letter width. For example, a narrow i or j should
+//      display closer to the next letter
 //    - fix up/down for centered text
 //    - add highlight/cut/paste
+//   *- either have a configurable stroke width or automatically change it
+//      based on size
+//   *- either have configurable intro-letter/row spacing or tighten
 //
 //  - maybe save example text font-size to .gf
 //
 //  - check all class imports and with GlobalFont
+//  - general code review
 //
-//  - test on mac/linux/windows
-//    - jwrapper worked on windows xp, 1/3 on mac os, couldn't try win>xp
+//  - test on newer windows, newer mac
 //
 package farg
 

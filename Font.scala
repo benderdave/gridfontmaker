@@ -17,7 +17,7 @@ case class Font(var name: String = "", letters: Map[String,Letter] = Map.empty) 
   for (ch <- alphabet.toSet diff letters.map(_._2.ch.head).toSet)
     letters(ch.toString) = Letter(ch.toString)
 
-  var example_text = "example text"
+  var example_text = "woven silk pyjamas\nexchanged for blue quartz"
 
   def save(saveName: String): String = {
     val currentState = toJson(this)
