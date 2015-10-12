@@ -7,7 +7,7 @@ import java.awt.event.{MouseMotionListener, MouseEvent, MouseListener,
  KeyListener, KeyEvent}
 import java.awt.geom.{Ellipse2D, Line2D, Point2D, Rectangle2D}
 import java.awt.RenderingHints._
-import javax.swing.{JPanel, JPopupMenu}
+import javax.swing.{JPanel, JPopupMenu, SwingUtilities}
 import java.util.{Observer, Observable}
 
 import GUIUtils.{MenuItem, interpolate}
@@ -74,6 +74,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       if (e.getKeyChar == 'c') clear()
       else if (e.getKeyChar == 'v') flipY
       else if (e.getKeyChar == 'h') flipX
+      else if (e.getKeyChar == 'r') rotate
       else if (e.getKeyChar == 'f')
         if (hitStroke.nonEmpty)
           flipStroke(hitStroke.get._1, hitStroke.get._2)
@@ -83,6 +84,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   val menuPopup = new JPopupMenu
   menuPopup.add(MenuItem("FlipX", () => flipX))
   menuPopup.add(MenuItem("FlipY", () => flipY))
+  menuPopup.add(MenuItem("Rotate 180 degrees", () => rotate))
   menuPopup.add(MenuItem("Clear", () => clear()))
   menuPopup.add(MenuItem("Nudge Up", () => nudgeUp))
   menuPopup.add(MenuItem("Nudge Down", () => nudgeDown))
@@ -113,6 +115,14 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   def flipY: Unit = {
     actions.add(FlipAction(this, () => {
       letter.flipY
+      observableLetter.changed()
+      repaint()
+    }))
+  }
+
+  def rotate: Unit = {
+    actions.add(RotateAction(this, () => {
+      letter.rotate
       observableLetter.changed()
       repaint()
     }))
@@ -262,25 +272,27 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   }
 
   override def mouseClicked(e: MouseEvent): Unit = {
-    val (x,y) = (e.getX, e.getY)
-    if (hitStroke.nonEmpty) {
-      val (start, end) = hitStroke.get
-      actions.add(StrokeAction(this, () => {
-        letter.removeStroke(start, end)
-        setHitStroke(None)
-        observableLetter.changed()
-        repaint()
-      }))
-    } else if (hitPotentialStroke.nonEmpty) {
-      val (start, end) = hitPotentialStroke.get
-      actions.add(StrokeAction(this, () => {
-        letter.addStroke(start, end)
-        setHitPotentialStroke(None)
-        observableLetter.changed()
-        repaint()
-      }))
+    if (SwingUtilities.isLeftMouseButton(e)) {
+      val (x,y) = (e.getX, e.getY)
+      if (hitStroke.nonEmpty) {
+        val (start, end) = hitStroke.get
+        actions.add(StrokeAction(this, () => {
+          letter.removeStroke(start, end)
+          setHitStroke(None)
+          observableLetter.changed()
+          repaint()
+        }))
+      } else if (hitPotentialStroke.nonEmpty) {
+        val (start, end) = hitPotentialStroke.get
+        actions.add(StrokeAction(this, () => {
+          letter.addStroke(start, end)
+          setHitPotentialStroke(None)
+          observableLetter.changed()
+          repaint()
+        }))
+      }
+      detectMouseHit(x, y)
     }
-    detectMouseHit(x, y)
   }
 
   override def mouseEntered(e: MouseEvent): Unit = requestFocus
@@ -295,15 +307,17 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   }
 
   override def mousePressed(e: MouseEvent): Unit = {
-    setDragLineStart(
-      if (hitAnchorIndex.nonEmpty) Some(getAnchorPos(hitAnchorIndex.get))
-      else None)
-    if (hitAnchorIndex.nonEmpty)
-      setHitPotentialStroke(None)
-    if (up.isSelected(this)) {
-      up.setDraggingLetter(this, true, 
-        if (up.shiftPressed) DRAGMOVE else DRAGCOPY, e.getX, e.getY)
-      up.setSelected(this, false)
+    if (SwingUtilities.isLeftMouseButton(e)) {
+      setDragLineStart(
+        if (hitAnchorIndex.nonEmpty) Some(getAnchorPos(hitAnchorIndex.get))
+        else None)
+      if (hitAnchorIndex.nonEmpty)
+        setHitPotentialStroke(None)
+      if (up.isSelected(this)) {
+        up.setDraggingLetter(this, true, 
+          if (up.shiftPressed) DRAGMOVE else DRAGCOPY, e.getX, e.getY)
+        up.setSelected(this, false)
+      }
     }
   }
 
@@ -403,9 +417,10 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     val centerRow = NumRows/2
     val centralTopLeft = rowColToIndex(centerRow-1, 0)
     val centralLowerRight = rowColToIndex(centerRow+1, NumCols-1)
-    val (_, y) = getAnchorPos(centralTopLeft)
-    g2.setColor(new Color(37,35,38))
-    g2.fill(new Rectangle2D.Double(0, y, getWidth, colStep*2))
+    val (x, y) = getAnchorPos(centralTopLeft)
+    val cStep = colStep
+    g2.setColor(centralZoneColor)
+    g2.fill(new Rectangle2D.Double(x, y, cStep*2, cStep*2))
   }
 
   def paintAnchors(g2: Graphics2D): Unit = {
@@ -419,7 +434,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
             ((hitAnchorIndex.get == index) ||
              (dragLineStart.nonEmpty && 
               canConnect(index, hitAnchorIndex.get)))) {
-          g2.setColor(Color.red)
+          g2.setColor(addColor)
           g2.fill(new Ellipse2D.Double(x-hlAnchorSize/2, y-hlAnchorSize/2,
             hlAnchorSize, hlAnchorSize))
           g2.setColor(Color.gray)
@@ -439,7 +454,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       val (start, end) = hitPotentialStroke.get
       val (startx, starty) = getAnchorPos(start)
       val (endx, endy) = getAnchorPos(end)
-      g2.setColor(new Color(70, 70, 70))
+      g2.setColor(addColor)
       g2.draw(new Line2D.Double(startx, starty, endx, endy))
     }
 
@@ -451,7 +466,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       val (endx, endy) = getAnchorPos(end)
       if (hitStroke.nonEmpty &&
           start == hitStroke.get._1 && end == hitStroke.get._2)
-          g2.setColor(Color.red)
+          g2.setColor(removeColor)
       else
         g2.setColor(Color.white)
       val strokeLine = new Line2D.Double(startx, starty, endx, endy)
@@ -470,7 +485,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
 
   def paintDragLine(g2: Graphics2D): Unit = {
     if (dragLineStart.nonEmpty && dragLineEnd.nonEmpty) {
-      g2.setColor(Color.red)
+      g2.setColor(addColor)
       g2.setStroke(lineStroke)
       val (startx, starty) = dragLineStart.get
       val (endx, endy) = dragLineEnd.get
@@ -495,6 +510,9 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
 object EditableLetter {
   import GridfontMaker._
 
+  var addColor = new Color(50, 200, 50)
+  var removeColor = new Color(200, 50, 50)
+  val centralZoneColor = new Color(37, 35, 38)
   var letterLabelFont = new AWTFont("System", AWTFont.ITALIC, 16)
   var letterLabelPad = 10
   val anchorRowPad = 2
@@ -511,13 +529,17 @@ object EditableLetter {
   val DRAGMOVE: Int = 2
 
   def getPreferredSizeGivenBounds(w: Int, h: Int, pad: Int): Dimension = {
+    //val nrows = if (
     // size such that a-m are on top row, and n-z on next row
     val (neww, newh) = ((w/('a' to 'm').length).toInt-pad, (h/2).toInt-pad)
     val newhLessPad = newh-anchorBottomPad
-    if (neww/AspectRatio < newhLessPad) // too tall for width?
-      new Dimension(neww, (neww/AspectRatio).toInt + anchorBottomPad) // adjust height to match width
-    else // still might be too wide for height
-      new Dimension((newhLessPad*AspectRatio).toInt, newh) // adjust width to match height
+    if (neww/AspectRatio < newhLessPad) {
+      // too tall for width? adjust height to match width
+      new Dimension(neww, (neww/AspectRatio).toInt + anchorBottomPad)
+    } else {
+      // too wide for height? adjust width to match height
+      new Dimension((newhLessPad*AspectRatio).toInt, newh)
+    }
   }
 
   def updateLetterConstants(d: Dimension): Unit = {

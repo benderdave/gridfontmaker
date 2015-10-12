@@ -11,7 +11,7 @@ TARGET_FILE=$(BUILD_CLASSDIR)/farg/GridfontMaker.class
 
 SOURCE_FILES=$(wildcard *.scala)
 
-.PHONY: all clean run
+.PHONY: all clean run tags
 
 all: gridfontmaker.jar gridfontmaker
 
@@ -20,6 +20,9 @@ run:
 
 clean:
 	rm -rf $(BUILD_ROOT) runscala runfsc gridfontmaker gridfontmaker.jar
+
+tags:
+	ctags $(SOURCE_FILES)
 
 $(TARGET_FILE): runfsc $(BUILD_CLASSDIR) $(SOURCE_FILES)
 	$(COMPILE_SCALA) $(SOURCE_FILES)

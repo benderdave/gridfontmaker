@@ -23,6 +23,19 @@ case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) 
 
   def getStrokes = for (stroke <- strokes) yield (stroke.start, stroke.end)
 
+  def isColInAnyStroke(col: Int): Boolean = {
+    getStrokes.find { case (start, end) =>
+      val (_, startcol) = getRowCol(start)
+      val (_, endcol) = getRowCol(end)
+      col == startcol || col == endcol
+    }.nonEmpty
+  }
+
+  def leadingOffset: Int = (0 until NumCols).indexWhere(isColInAnyStroke(_))
+  def trailingOffset: Int =
+    (NumCols-1 to 0 by -1).indexWhere(isColInAnyStroke(_))
+  def width: Int = (NumCols-1) - (leadingOffset + trailingOffset)
+
   def clear: Unit = strokes.clear
 
   def flipX: Unit = {
@@ -43,6 +56,11 @@ case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) 
       strokes(i) = Stroke(rowColToIndex((NumRows-1)-startrow, startcol), 
         rowColToIndex((NumRows-1)-endrow, endcol))
     }
+  }
+
+  def rotate: Unit = {
+    flipX
+    flipY
   }
 
   def flipStroke(start: Int, end: Int): Unit = {

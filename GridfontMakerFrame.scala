@@ -20,7 +20,7 @@ class GridfontMakerFrame(var filename: String) extends JFrame
     with WindowListener with GlobalFont {
   setBackground(Color.black)
   val alphAndNameArea = new AlphabetAndNameArea
-  val textPanel = new ExampleTextPanel(14.0, gfont.example_text)
+  val textPanel = new ExampleTextPanel(18.0, gfont.example_text)
   textPanel.textArea.obs.addObserver(new Observer with GlobalFont {
     override def update(o: Observable, text: Any): Unit = 
       gfont.example_text = text.asInstanceOf[String]
@@ -167,11 +167,10 @@ object GridfontMakerFrame {
     gui.setDefaultCloseOperation(DISPOSE_ON_CLOSE)
     gui.setSize(preferredSize)
     gui.validate
-    //gui.getLayout().layoutContainer(gui) // ?
 
     SwingUtilities.invokeAndWait(new Runnable() {
       override def run(): Unit = {
-        gui.pack // ?
+        gui.pack
         gui.setVisible(true)
       }
     })

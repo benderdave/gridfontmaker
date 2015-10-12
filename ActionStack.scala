@@ -113,6 +113,9 @@ case class ClearAction(guiLetter: EditableLetter, f: () => Unit)
 case class FlipAction(guiLetter: EditableLetter, f: () => Unit) 
   extends LetterChangeAction("flip letter", guiLetter, f)
 
+case class RotateAction(guiLetter: EditableLetter, f: () => Unit) 
+  extends LetterChangeAction("rotate letter", guiLetter, f)
+
 case class FlipStrokeAction(guiLetter: EditableLetter, f: () => Unit) 
   extends LetterChangeAction("flip stroke", guiLetter, f)
 

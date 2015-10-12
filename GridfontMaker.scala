@@ -1,11 +1,12 @@
 // TODO
 //  - EditableLetter
-//    - 'r' to rotate by 180 degrees around center
-//   *- 1-6 to select horizontal extent of letter
-//    - maybe animate history for each letter
+//   *- 1-6 to override horizontal extent (offet+size)
+//    - maybe animate history for each letter (no)
 //
 //  - Grid
-//    - optional three column layout option
+//   *- optional three column layout option
+//
+//**- bug fix: sometimes we don't offer to save when changes have been made!
 //
 //  - GridfontTextArea
 //   *- support for per-letter width. For example, a narrow i or j should
@@ -16,12 +17,12 @@
 //      based on size
 //   *- either have configurable intro-letter/row spacing or tighten
 //
-//  - maybe save example text font-size to .gf
+//  - maybe save example text font-size/spacing/etc to .gf
 //
 //  - check all class imports and with GlobalFont
 //  - general code review
-//
 //  - test on newer windows, newer mac
+//  - slim down gf file by changing stroke to (Int,Int)
 //
 package farg
 

@@ -230,7 +230,7 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
     }
   }
   override def mouseMoved(e: MouseEvent): Unit = {}
-  override def mouseEntered(e: MouseEvent): Unit = requestFocus()
+  override def mouseEntered(e: MouseEvent): Unit = {}
   override def mouseExited(e: MouseEvent): Unit = {}
 
   override def mouseClicked(e: MouseEvent): Unit = mouseDragged(e)

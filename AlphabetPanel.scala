@@ -7,7 +7,7 @@ import javax.swing.border.EmptyBorder
 // ----------------------------------------------------------------------------
 class AlphabetPanel extends JPanel {
   setBackground(Color.gray)
-  val textArea = new GridfontTextArea(9.0, ('a' to 'z').mkString)
+  val textArea = new GridfontTextArea(14.0, ('a' to 'z').mkString)
   add(textArea)
 }
 
