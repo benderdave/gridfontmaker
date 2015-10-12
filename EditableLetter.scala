@@ -72,6 +72,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       }
     override def keyTyped(e: KeyEvent): Unit = {
       if (e.getKeyChar == 'c') clear()
+      else if (e.getKeyChar == 'a') clearOthers
       else if (e.getKeyChar == 'v') flipY
       else if (e.getKeyChar == 'h') flipX
       else if (e.getKeyChar == 'r') rotate
@@ -86,6 +87,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   menuPopup.add(MenuItem("FlipY", () => flipY))
   menuPopup.add(MenuItem("Rotate 180 degrees", () => rotate))
   menuPopup.add(MenuItem("Clear", () => clear()))
+  menuPopup.add(MenuItem("Clear all others", () => clearOthers))
   menuPopup.add(MenuItem("Nudge Up", () => nudgeUp))
   menuPopup.add(MenuItem("Nudge Down", () => nudgeDown))
   menuPopup.add(MenuItem("Nudge Left", () => nudgeLeft))
@@ -102,6 +104,10 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       clearAction.doit(true)
     else
       actions.add(clearAction)
+  }
+
+  def clearOthers: Unit = {
+    actions.add(GridClearOthersAction(() => up.clearAll(Seq(this))))
   }
 
   def flipX: Unit = {
@@ -529,9 +535,14 @@ object EditableLetter {
   val DRAGMOVE: Int = 2
 
   def getPreferredSizeGivenBounds(w: Int, h: Int, pad: Int): Dimension = {
-    //val nrows = if (
-    // size such that a-m are on top row, and n-z on next row
-    val (neww, newh) = ((w/('a' to 'm').length).toInt-pad, (h/2).toInt-pad)
+    val newAspect = w.toDouble/h.toDouble
+    val bestNumLettersPerRow = (1 until 26).map { n =>
+      val nAspect = (AspectRatio*n)/((26+n-1)/n)
+      (newAspect-nAspect, n)
+    }.filter(_._1 >= 0).min._2
+    val n = (bestNumLettersPerRow+1).toDouble
+
+    val (neww, newh) = ((w/n).toInt-pad, (h/(26/n)).toInt-pad)
     val newhLessPad = newh-anchorBottomPad
     if (neww/AspectRatio < newhLessPad) {
       // too tall for width? adjust height to match width

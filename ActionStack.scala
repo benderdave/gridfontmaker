@@ -166,6 +166,7 @@ class GridAction(msg: String, f: () => Unit) extends Action with GlobalFont {
 }
 
 case class GridClearAction(f: () => Unit) extends GridAction("clear grid", f)
+case class GridClearOthersAction(f: () => Unit) extends GridAction("clear other letters", f)
 
 case class NameChangeAction(f: (Boolean) => Unit) extends Action 
     with GlobalFont {

@@ -51,7 +51,7 @@ class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
   add(gridMenu)
 
   val clearItem = MenuItem("Clear", () => 
-    actions.add(GridClearAction(() => gui.editPanel.clearAll)))
+    actions.add(GridClearAction(() => gui.editPanel.clearAll())))
   clearItem.setAccelerator(KeyStroke.getKeyStroke('C', shortcutKey))
   gridMenu.add(clearItem)
 

@@ -4,7 +4,6 @@
 //    - maybe animate history for each letter (no)
 //
 //  - Grid
-//   *- optional three column layout option
 //
 //**- bug fix: sometimes we don't offer to save when changes have been made!
 //
@@ -23,6 +22,10 @@
 //  - general code review
 //  - test on newer windows, newer mac
 //  - slim down gf file by changing stroke to (Int,Int)
+//
+//  - add makefile code to wget needed libraries, run jwrapper, upload pre-
+//    built apps to google drive, and put appropriate links in README. Ideally
+//    the entire process should be push-button.
 //
 package farg
 

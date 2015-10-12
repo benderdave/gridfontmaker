@@ -16,7 +16,7 @@
      A gridfont is a font made up of 26 glyphs representing the lowercase 
      letters of the English
      alphabet. Each letter is drawn on a 3x7 grid with connections allowed
-     only between neighbors (including diagonals.)
+     only between neighbors (including 45 degree diagonals.)
      <p>Briefly, the editor contains four areas, from top to bottom:
      <ul>
         <li>Font name</li>
@@ -32,12 +32,13 @@
   <hr>
   <h1>Small a-z display</h1>
      <p class="m">This area contains a small rendering of the lowercase alphabet (a-z) in
-     the current font. Use +/- to change the font size when the mouse is over
-     this area.
+     the current font. Use +/- to change the font size when this area is
+     selected (click with the mouse to select.)
   <hr>
   <h1>Editable letters</h1>
      <p>This area contains two rows with all 26 letters. Edit each letter in-place
-     by dragging the mouse between anchor points to create a stroke. Delete
+     by dragging the mouse between anchor points to create a stroke, or by
+     clicking on an empty spot where a new stroke can be added. Delete
      strokes by clicking on them. 
      <p>When hovering over a letter..
      <ul>
@@ -45,7 +46,11 @@
         right.</li>
         <li>Press <b>h</b> to flip the letter horizontally.</li>
         <li>Press <b>v</b> to flip the letter vertically.</li>
+        <li>Press <b>r</b> to rotate the letter 180 degrees around its center.</li>
         <li>Press <b>c</b> to clear the letter.</li>
+        <li>Press <b>a</b> to clear all letters <i>except</i> this one. (It's
+        common for a letter in one typeface to become the seed for a completely
+        different, new typeface.)</li>
         <li>Press <b>o</b> to see the order of strokes. Stroke numbers are displayed
         nearest to their starting anchor.</li>
      </ul>
@@ -59,12 +64,13 @@
         <li><b>Drag</b> the mouse to copy the letter onto another letter.</li>
         <li><b>Shift-Drag</b> with the mouse to move the letter in between two other
         letters. (This is so you can work on two letters side-by-side if
-        desired.)</li>
+        desired. Use the <b>Sort</b> action in the <b>grid</b> menu to restore the
+        original order.)</li>
      </ul>
   <hr>
   <h1>Editable text area</h1>
   <p class="m">Type any text here that you would like to see displayed in your font.
-     Use +/- to change the font size when the mouse is over this area.
+     Use +/- to change the font size when this area is selected.
   <hr>
      <p>If you have any questions or comments, feel free to email me at
         dcbender@indiana.edu.

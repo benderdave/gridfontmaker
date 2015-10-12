@@ -37,8 +37,10 @@ class EditPanel(updatables: Seq[Observer]) extends JPanel with GlobalFont with
   var dragType: Int = NODRAG
   var dragTargets: Seq[EditableLetter] = Seq.empty
 
-  def clearAll: Unit = {
-    guiLetters.foreach(_._2.clear(true))
+  def clearAll(except: Seq[EditableLetter] = Seq.empty): Unit = {
+    guiLetters.filter { case (ch: String, letter: EditableLetter) =>
+      !except.contains(letter)
+    }.foreach(_._2.clear(true))
     repaint()
   }
 

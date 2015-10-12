@@ -21,6 +21,10 @@ class ExampleTextPanel(initialSize: Double = 16.0, val initialText: String)
     extends JPanel {
   setBackground(Color.gray)
   val textArea = new GridfontTextArea(initialSize, initialText, true, true)
+  textArea.obs.addObserver(new Observer with GlobalFont {
+    override def update(o: Observable, text: Any): Unit = 
+      gfont.example_text = text.asInstanceOf[String]
+  })
   setBorder(new EmptyBorder(10, 10, 10, 10))
   add(textArea)
 }

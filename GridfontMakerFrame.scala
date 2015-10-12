@@ -21,10 +21,6 @@ class GridfontMakerFrame(var filename: String) extends JFrame
   setBackground(Color.black)
   val alphAndNameArea = new AlphabetAndNameArea
   val textPanel = new ExampleTextPanel(18.0, gfont.example_text)
-  textPanel.textArea.obs.addObserver(new Observer with GlobalFont {
-    override def update(o: Observable, text: Any): Unit = 
-      gfont.example_text = text.asInstanceOf[String]
-  })
   val editPanel = new EditPanel(
     Seq(alphAndNameArea.alphPanel.textArea, textPanel.textArea)
   )
@@ -114,7 +110,7 @@ class GridfontMakerFrame(var filename: String) extends JFrame
   def newGrid: Unit = {
     alphAndNameArea.clear
     textPanel.textArea.clear
-    editPanel.clearAll
+    editPanel.clearAll()
     filename = ""
     gfont.clear
     savedFontState = toJson(gfont)
