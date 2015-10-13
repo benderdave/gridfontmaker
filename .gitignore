@@ -1,5 +1,4 @@
 jwrapper/
-lib3rd/*.jar
 libscala/
 tidbits/
 .DS_Store

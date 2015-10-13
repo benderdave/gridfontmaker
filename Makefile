@@ -2,7 +2,9 @@ BUILD_ROOT=./_build
 BUILD_CLASSDIR=$(BUILD_ROOT)/classes
 
 LIB3RD=./lib3rd
-CLASS_PATH=$(BUILD_CLASSDIR):$(LIB3RD)/genson-scala_2.11-1.3.jar:$(LIB3RD)/genson-1.3.jar
+LIBSCALA=./libscala
+DEPS=$(LIB3RD)/genson-scala_2.11-1.3.jar:$(LIB3RD)/genson-1.3.jar
+CLASS_PATH=$(BUILD_CLASSDIR):$(DEPS)
 SCALA_FLAGS=-d $(BUILD_CLASSDIR) -classpath .:$(CLASS_PATH) -Xfatal-warnings\
  -explaintypes -Xprint-types -feature -deprecation
 COMPILE_SCALA=@fsc -reset && ./runfsc $(SCALA_FLAGS)
@@ -24,7 +26,7 @@ clean:
 tags:
 	ctags $(SOURCE_FILES)
 
-$(TARGET_FILE): runfsc $(BUILD_CLASSDIR) $(SOURCE_FILES)
+$(TARGET_FILE): runfsc $(BUILD_CLASSDIR) Makefile $(SOURCE_FILES)
 	$(COMPILE_SCALA) $(SOURCE_FILES)
 
 gridfontmaker.jar: $(TARGET_FILE)
@@ -32,15 +34,13 @@ gridfontmaker.jar: $(TARGET_FILE)
 
 runscala: Makefile
 	echo "#! /usr/bin/env bash" > runscala
-	echo "# runner for Scala programs" >> runscala
-	echo "# generated" `date` >> runscala
+	echo "# Scala runner generated" `date` >> runscala
 	echo "scala $(SCALA_FLAGS)" '"$$@"' >> runscala
 	chmod a+x runscala
 
 runfsc:
 	echo "#! /usr/bin/env bash" > runfsc
-	echo "# fast Scala compiler runner" >> runfsc
-	echo "# generated" `date` >> runfsc
+	echo "# fast Scala compiler runner generated" `date` >> runfsc
 	echo "echo fsc" '"$$@"' >> runfsc
 	echo "fsc" '"$$@"' >> runfsc
 	chmod a+x runfsc

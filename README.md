@@ -15,7 +15,7 @@ connected (45-degree diagonals are allowed), and each stroke is a simple line, w
 decorations or variations in thickness. 
 
 ![Image explaining gridfont domain]
-(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/gridfont-defn.png)
+(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/gridfont-defn.png)
 
 Even under these radical
 restrictions many interesting fonts have been created. The domain's severely restricted nature
@@ -23,7 +23,7 @@ forces a font designer quickly into radical experimentation and exploration.
 The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 
 ![Sampling of gridfonts]
-(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/benzene-etc.png)
+(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/benzene-etc.png)
 
 The gridfont domain is a micro-domain intended for studying the cognitive process
 that underlies most thinking: analogy. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
@@ -65,10 +65,9 @@ anything (but you have to install dependencies).
 * Make sure you have a recent version of java
 * Locate and download the following dependencies:
   * genson-1.3.jar (put in ./lib3rd)
-  * json-simple-1.1.1.jar (put in ./lib3rd)
   * genson-scala_2.11-1.3.jar (put in ./lib3rd)
-  * scala-library.jar (put in ./libscala)
-  * scala-reflect.jar (put in ./libscala)
+  * scala-library.jar (from scala-2.11; put in ./libscala)
+  * scala-reflect.jar (from scala-2.11; put in ./libscala)
 * Run with "java -jar gridfontmaker.jar" (on some systems you can just
   double-click on the jar file.)
 
@@ -81,7 +80,6 @@ Right now the only way to build GridfontMaker is on a unix-like system with
 * Make sure you have a recent version of both java and scala
 * Locate, download, and put the following dependencies in ./lib3rd
   * genson-1.3.jar
-  * json-simple-1.1.1.jar
   * genson-scala_2.11-1.3.jar
 * Build with "make"
 * Run with "make run"

@@ -3,8 +3,6 @@
 //   *- 1-6 to override horizontal extent (offet+size)
 //    - maybe animate history for each letter (no)
 //
-//  - Grid
-//
 //**- bug fix: sometimes we don't offer to save when changes have been made!
 //
 //  - GridfontTextArea
