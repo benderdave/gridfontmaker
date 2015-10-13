@@ -93,3 +93,10 @@ If you have any problems, questions, bug-reports, requests, or comments, feel fr
 dcbender@indiana.edu. (However, I can't promise I'll be quick to respond, as
 I'm working on my dissertation.) If you create any interesting fonts, please
 share them!
+
+# Legal
+
+GridfontMaker is writtin in scala and uses the [Genson](http://owlike.github.io/genson/)
+library for (de)serializing. License notices for these projects are included.
+* [Genson](https://raw.githubusercontent.com/benderdave/gridfontmaker/master/GENSON_LICENSE)
+* [Scala](https://raw.githubusercontent.com/benderdave/gridfontmaker/master/SCALA_LICENSE)
