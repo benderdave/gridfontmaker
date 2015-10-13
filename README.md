@@ -59,30 +59,22 @@ sytems to test on, and no installations of windows.
 ## Using java
 
 If you have java installed you can run GridfontMaker without compiling
-anything (but you have to install dependencies).
+anything.
 
 * Clone the source
 * Make sure you have a recent version of java
-* Locate and download the following dependencies:
-  * genson-1.3.jar (put in ./lib3rd)
-  * genson-scala_2.11-1.3.jar (put in ./lib3rd)
-  * scala-library.jar (from scala-2.11; put in ./libscala)
-  * scala-reflect.jar (from scala-2.11; put in ./libscala)
 * Run with "java -jar gridfontmaker.jar" (on some systems you can just
   double-click on the jar file.)
 
 # Building and running from source
 
 Right now the only way to build GridfontMaker is on a unix-like system with
-*make*, *java*, and *scala* (and you have to install dependencies).
+*make*, *java*, and *scala*.
 
 * Clone the source
 * Make sure you have a recent version of both java and scala
-* Locate, download, and put the following dependencies in ./lib3rd
-  * genson-1.3.jar
-  * genson-scala_2.11-1.3.jar
 * Build with "make"
-* Run with "make run"
+* Run with "./gridfontmaker"
 
 Example fonts are included in the "fonts" directory.
 
@@ -90,7 +82,7 @@ Example fonts are included in the "fonts" directory.
 
 Features I'm considering adding:
 
-* export to true-type format
+* export to true-type font format (ttf)
 * inkscape plugin to render text in a gridfont
 * support variable letter widths in gridfont text area
 * show another gridfont in a separate window for comparison
