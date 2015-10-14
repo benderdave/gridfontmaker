@@ -53,8 +53,8 @@ install anything else.
 
 [Windows 32-bit](https://www.dropbox.com/s/xilu1rqr8ve82w3/GridfontMaker-windows32-offline.exe?dl=0)
 
-Please let me know if any of these don't work for you. I only have one or two 
-sytems to test on, and no installations of windows.
+Please let me know if any of these don't work for you. I only have linux,
+windows xp, and older mac sytems to test on.
 
 ## Using java
 
@@ -84,7 +84,6 @@ Features I'm considering adding:
 
 * export to true-type font format (ttf)
 * inkscape plugin to render text in a gridfont
-* support variable letter widths in gridfont text area
 * show another gridfont in a separate window for comparison
 
 # Problems
@@ -96,7 +95,7 @@ share them!
 
 # Legal
 
-GridfontMaker is writtin in scala and uses the [Genson](http://owlike.github.io/genson/)
+GridfontMaker is written in scala and uses the [Genson](http://owlike.github.io/genson/)
 library for (de)serializing. License notices for these projects are included.
 * [Genson](https://raw.githubusercontent.com/benderdave/gridfontmaker/master/GENSON_LICENSE)
 * [Scala](https://raw.githubusercontent.com/benderdave/gridfontmaker/master/SCALA_LICENSE)
