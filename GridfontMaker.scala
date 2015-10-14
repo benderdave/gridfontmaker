@@ -1,29 +1,27 @@
 // TODO
+//  - potential bug: sometimes we don't seem to offer to save when changes 
+//     have been made!
+//
 //  - EditableLetter
-//   *- 1-6 to override horizontal extent (offet+size)
+//    - 1-6 to override horizontal extent (offet+size)
 //    - maybe animate history for each letter (no)
 //
-//**- bug fix: sometimes we don't offer to save when changes have been made!
-//
 //  - GridfontTextArea
-//   *- support for per-letter width. For example, a narrow i or j should
-//      display closer to the next letter
-//    - fix up/down for centered text
 //    - add highlight/cut/paste
-//   *- either have a configurable stroke width or automatically change it
-//      based on size
-//   *- either have configurable intro-letter/row spacing or tighten
+//    - either have configurable intro-letter/row spacing or tighten
 //
 //  - maybe save example text font-size/spacing/etc to .gf
+//
+//  - change "toggle" to show/hide
 //
 //  - check all class imports and with GlobalFont
 //  - general code review
 //  - test on newer windows, newer mac
 //  - slim down gf file by changing stroke to (Int,Int)
 //
-//  - add makefile code to wget needed libraries, run jwrapper, upload pre-
-//    built apps to google drive, and put appropriate links in README. Ideally
-//    the entire process should be push-button.
+//  - JWrapper
+//    - mounting mac installer doesn't automatically show drive in finder
+//    - quitting mac version (ctrl-q) doesn't close app
 //
 package farg
 

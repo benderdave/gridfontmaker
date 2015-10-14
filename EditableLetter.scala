@@ -216,7 +216,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
       val (anchorx, anchory) = getAnchorPos(anchorIdx)
       val seg = new Line2D.Double(startx, starty, anchorx, anchory)
       (seg.ptSegDist(x, y), anchorIdx)
-    }.filter(_._1 < lineSelectDist)
+    }.filter(_._1 < potLineSelectDist)
     if (bydist.nonEmpty) Some(bydist.min._2) else None
   }
 
@@ -527,6 +527,7 @@ object EditableLetter {
   var anchorSize = 0
   var hlAnchorSize = 0
   var lineSelectDist = 0.0
+  var potLineSelectDist = 0.0
   var anchorSelectDist = 0.0
   var anchorBottomPad = 0
 
@@ -557,6 +558,7 @@ object EditableLetter {
     anchorSize = Math.max((d.getWidth / 17).toInt, 6)
     hlAnchorSize = (anchorSize*1.5).toInt
     lineSelectDist = anchorSize*1.2
+    potLineSelectDist = anchorSize
     anchorSelectDist = anchorSize*1.7
     anchorBottomPad = (d.getHeight / 17).toInt
     letterLabelFont = letterLabelFont.deriveFont(

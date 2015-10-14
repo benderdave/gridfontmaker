@@ -35,6 +35,14 @@ object GUIUtils {
     item
   }
 
+  def MenuItemRef(name: String, f: (JMenuItem) => Any): JMenuItem = {
+    val item = new JMenuItem(name)
+    item.addActionListener(new ActionListener {
+      override def actionPerformed(e: ActionEvent): Unit = f(item)
+    })
+    item
+  }
+
   def CheckBoxMenuItem(name: String, f: () => Any): JCheckBoxMenuItem = {
     val item = new JCheckBoxMenuItem(name)
     item.addItemListener(new ItemListener {

@@ -1,9 +1,10 @@
 package farg
 
-import java.awt.{Dimension, Color, Graphics2D, Graphics}
+import java.awt.{Dimension, Color, Graphics2D, Graphics, BasicStroke}
 import java.awt.event.{MouseMotionListener, MouseEvent, MouseListener,
  KeyListener, KeyEvent, FocusListener, FocusEvent}
 import java.awt.geom.Line2D
+import java.awt.BasicStroke._
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 import java.util.{Observer, Observable}
@@ -47,17 +48,22 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
 
   var gfontSize = 0.0
   var letterWidth = 0
+  var quantaWidth = 0.0
   var letterHeight = 0
   var text = ""
   var lines: Array[String] = Array.empty
   var lineLengths: Array[Int] = Array.empty
+  var lineQuantaOffsets: Array[Array[Int]] = Array.empty
+  var lineQuantaLengths: Array[Int] = Array.empty
   var maxLineLen = 0
+
+  var lineStroke = new BasicStroke(2.3f, CAP_ROUND, JOIN_BEVEL)
 
   var carrotRow = 0
   var carrotCol = 0
 
-  var hspacing = 1
-  var vspacing = -4
+  var hspacing = -1
+  var vspacing = -7
 
   setSize(initialSize)
   setText(initialText, true)
@@ -76,9 +82,12 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
         }
         setText(newLines.mkString("\n"))
       } else {
-        setText(lines.slice(0, lines.length-1).mkString("\n"))
+        val beforeRows = lines.slice(0, carrotRow)
+        carrotCol = lineLengths(carrotRow-1)
+        beforeRows(beforeRows.length-1) += lines(carrotRow)
+        val afterRows = lines.slice(carrotRow+1, lines.length)
+        setText((beforeRows ++ afterRows).mkString("\n"))
         carrotRow -= 1
-        carrotCol = lineLengths(lineLengths.length-1)
       }
     }
   }
@@ -126,16 +135,20 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
 
   def up: Unit = {
     if (carrotRow > 0) {
-      carrotRow -= 1
-      carrotCol = Math.min(lineLengths(carrotRow), carrotCol)
+      val (x,y) = getMidCharPos(carrotCol, carrotRow)
+      val (row,col) = getCarrotRowCol(x, ((y+letterHeight/2)-(letterHeight+vspacing/2)).toInt)
+      carrotRow = row
+      carrotCol = col
       repaint()
     }
   }
 
   def down: Unit = {
     if (carrotRow < lines.length-1) {
-      carrotRow += 1
-      carrotCol = Math.min(lineLengths(carrotRow), carrotCol)
+      val (x,y) = getMidCharPos(carrotCol, carrotRow)
+      val (row,col) = getCarrotRowCol(x, ((y+letterHeight/2)+(letterHeight+vspacing/2)).toInt)
+      carrotRow = row
+      carrotCol = col
       repaint()
     }
   }
@@ -164,7 +177,7 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
     else if (editable && (c.isLetter || c == ' ' || c == '\n'))
       insert(c)
     else if (c == '+') {
-      val newSize = Math.min(60.0, gfontSize + 1.0)
+      val newSize = Math.min(80.0, gfontSize + 1.0)
       actions.add(SizeChangeAction(this, () => {
         setSize(newSize)
         calculatePreferredSize
@@ -186,7 +199,7 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
   override def focusLost(e: FocusEvent): Unit = repaint()
 
   def calculatePreferredSize: Unit = {
-    val width = letterWidth*maxLineLen + (maxLineLen-1)*hspacing
+    val width = (quantaWidth*lineQuantaLengths.max).toInt + (maxLineLen-1)*hspacing
     val height = letterHeight*lines.length + (lines.length-1)*vspacing
     setPreferredSize(new Dimension(width, height))
   }
@@ -194,13 +207,16 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
   def setSize(newSize: Double): Unit = {
     gfontSize = newSize
     letterWidth = (gfontSize*2).toInt
+    quantaWidth = letterWidth / NumCols.toDouble
     letterHeight = (letterWidth/AspectRatio).toInt
+    lineStroke = new BasicStroke((newSize/5.2).toFloat, CAP_ROUND, JOIN_BEVEL)
   }
 
-  def rowWidth(row: Int): Double = (letterWidth+hspacing)*lineLengths(row)
+  def rowWidth(row: Int): Double = 
+    (hspacing*(lineLengths(row)-1)) + (quantaWidth*lineQuantaLengths(row))
 
   def getCharPos(col: Int, row: Int): (Int, Int) = {
-    val x = (letterWidth+hspacing)*col
+    val x = ((hspacing*col)+(quantaWidth*lineQuantaOffsets(row)(col))).toInt
     val y = (letterHeight+vspacing)*row
     if (centered)
       ((x + (getWidth - rowWidth(row))/2).toInt, y)
@@ -208,12 +224,33 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
       (x, y)
   }
 
+  def getMidCharPos(col: Int, row: Int): (Int, Int) = {
+    val (x,y) = getCharPos(col, row)
+    val halfLetterWid = (getLetterWidthInQuanta(row, col)/2.0).toInt
+    (x+halfLetterWid, y)
+  }
+
+  def getLetterWidthInQuanta(row: Int, col: Int): Int = {
+    if (col < lineLengths(row)) {
+      val ch = lines(row)(col)
+      if (ch == ' ') spaceQuantaWidth
+      else gfont.letters(ch.toString).width
+    } else 0
+  }
+
   def getCarrotRowCol(x: Int, y: Int): (Int, Int) = {
     val row = Math.max(0, Math.min(lines.length-1,
-      (y/(letterHeight+vspacing)).toInt))
+      (y/(letterHeight+(vspacing/2))).toInt))
     val cx = if (centered) (x + (rowWidth(row) - getWidth)/2) else x
-    val col = ((cx+(letterWidth/2))/(letterWidth+hspacing)).toInt
-    (row, Math.max(0, Math.min(col, lineLengths(row))))
+    val col = lineQuantaOffsets(row).view.zipWithIndex.indexWhere { 
+      case (qoff, idx) =>
+        val halfLetterWid = getLetterWidthInQuanta(row, idx)/2.0
+        (hspacing*idx)+(quantaWidth*(qoff+halfLetterWid)) >= cx
+    }
+    val finalCol = 
+      if (col == -1) lineLengths(row)
+      else Math.max(0, Math.min(col, lineLengths(row)))
+    (row, finalCol)
   }
 
   def getAnchorPos(index: Int): (Int,Int) = {
@@ -241,12 +278,27 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
   override def mousePressed(e: MouseEvent): Unit = requestFocus()
   override def mouseReleased(e: MouseEvent): Unit = {}
 
+  def spaceQuantaWidth = NumCols-1
+
+  def getCharacterOffsets(lines: Array[String]): Array[Array[Int]] = {
+    lines.map {
+      _.scanLeft(0){ case (last, cur) => 
+        cur match {
+          case ' ' => last + spaceQuantaWidth
+          case _ => last + gfont.letters(cur.toString).width 
+        }
+      }.toArray
+    }
+  }
+
   def setText(newText: String, noChange: Boolean = false): Unit = {
     val textChange = ExampleTextChangeAction(() => {
       text = newText
       lines = newText.split("\n", newText.length)
       lineLengths = lines.map(_.length)
       maxLineLen = lineLengths.max
+      lineQuantaOffsets = getCharacterOffsets(lines)
+      lineQuantaLengths = lineQuantaOffsets.map(line => line(line.length-1))
       calculatePreferredSize
       repaint()
       if (getParent() != null)
@@ -271,21 +323,27 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
 
   def renderText(g2: Graphics2D): Unit = {
     g2.setColor(Color.white)
-    g2.setStroke(smallLineStroke)
+    g2.setStroke(lineStroke)
     for (i <- 0 until lines.length) {
       val row = lines(i)
       for (j <- 0 until row.length) {
         val char = row(j)
         val (x,y) = getCharPos(j, i)
-        if (char != ' ') drawLetter(g2, char.toString, x, y)
+        if (char != ' ') {
+          val lead = gfont.letters(char.toString).leadingOffset
+          val finalx = (x - lead*quantaWidth).toInt
+          drawLetter(g2, char.toString, finalx, y)
+        }
       }
     }
   }
 
   def drawCarrot(g2: Graphics2D): Unit = {
     val (x,y) = getCharPos(carrotCol, carrotRow)
+    g2.setStroke(smallLineStroke)
     g2.setColor(Color.black)
-    g2.draw(new Line2D.Double(x, y, x, y+letterHeight))
+    g2.draw(new Line2D.Double(x, y+(letterHeight*1.0/7.0).toInt, x,
+      y+(letterHeight*5.0/7.0).toInt))
   }
 
   override def paintComponent(g: Graphics): Unit = {

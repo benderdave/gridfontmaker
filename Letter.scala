@@ -34,7 +34,7 @@ case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) 
   def leadingOffset: Int = (0 until NumCols).indexWhere(isColInAnyStroke(_))
   def trailingOffset: Int =
     (NumCols-1 to 0 by -1).indexWhere(isColInAnyStroke(_))
-  def width: Int = (NumCols-1) - (leadingOffset + trailingOffset)
+  def width: Int = NumCols - (leadingOffset + trailingOffset)
 
   def clear: Unit = strokes.clear
 

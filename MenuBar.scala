@@ -4,7 +4,7 @@ import java.awt.Toolkit
 import javax.swing.{JMenuBar, JMenu, KeyStroke}
 import java.awt.event.WindowEvent
 
-import GUIUtils.MenuItem
+import GUIUtils.{MenuItem, MenuItemRef}
 
 // ----------------------------------------------------------------------------
 class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
@@ -60,16 +60,18 @@ class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
   gridMenu.add(sortItem)
   gridMenu.addSeparator
 
-  val toggleShowAnchorsItem = MenuItem("Toggle displaying anchors", () => {
+  val toggleShowAnchorsItem = MenuItemRef("Hide anchors", mi => {
     val p = gui.editPanel
     p.showAnchors = !p.showAnchors
+    mi.setText(if (p.showAnchors) "Hide anchors" else "Show anchors")
     p.repaint()
   })
   gridMenu.add(toggleShowAnchorsItem)
 
-  val toggleShowCentralZoneItem = MenuItem("Toggle highlighting central zone", () => {
+  val toggleShowCentralZoneItem = MenuItemRef("Show central zone", mi => {
     val p = gui.editPanel
     p.showCentralZone = !p.showCentralZone
+    mi.setText(if (p.showCentralZone) "Hide central zone" else "Show central zone")
     p.repaint()
   })
   gridMenu.add(toggleShowCentralZoneItem)
