@@ -12,23 +12,23 @@ constraints. The 26 lowercase English letters make up a complete gridfont
 capitals, punctuation, or numerals are included &mdash;
 and each is created on a 3x7 grid of anchors. Only neighboring anchors can be
 connected (45-degree diagonals are allowed), and each stroke is a simple line, without
-decorations or variations in thickness. 
+decorations or variation in thickness. 
 
 ![Image explaining gridfont domain]
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/gridfont-defn.png)
 
 Even under these radical
-restrictions many interesting fonts have been created. The domain's severely restricted nature
-forces a font designer quickly into radical experimentation and exploration.
+restrictions many interesting fonts have been created. The domain's severely limited nature
+propels a font designer quickly into deep experimentation and widespread exploration.
 The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 
 ![Sampling of gridfonts]
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/benzene-etc.png)
 
-The gridfont domain is a micro-domain intended for studying the cognitive process
+The gridfont micro-domain was created for studying the cognitive process
 that underlies most thinking: analogy. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
-Rehling and Gary McGraw. That said, we've found that designing gridfonts is a
-uniquely creative activity that stands on its own. 
+Rehling and Gary McGraw for such work. That said, we've found that designing gridfonts can be a
+creative activity that stands on its own. 
 
 GridfontMaker is provided to
 help anyone interested in gridfonts create and share them.
@@ -78,7 +78,7 @@ Right now the only way to build GridfontMaker is on a unix-like system with
 
 Example fonts are included in the "fonts" directory.
 
-# Roadmap
+# Future
 
 Features I'm considering adding:
 
