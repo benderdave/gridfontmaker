@@ -25,9 +25,9 @@ The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 ![Sampling of gridfonts]
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/benzene-etc.png)
 
-The gridfont micro-domain was created for studying the cognitive process
-that underlies most thinking: analogy. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work by John 
-Rehling and Gary McGraw for such work. That said, we've found that designing gridfonts can be a
+The gridfont micro-domain was created for studying *analogy*, the cognitive process
+that underlies most thinking. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work in the gridfont domain by John 
+Rehling and Gary McGraw. That said, we've found that designing gridfonts can be a
 creative activity that stands on its own. 
 
 GridfontMaker is provided to
