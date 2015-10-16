@@ -1,9 +1,11 @@
 // TODO
-//  - potential bug: sometimes we don't seem to offer to save when changes 
-//     have been made!
+//  - bug: initial size isn't correct (showing central zone reveals this)
+//
+//  - EditPanel
+//    - allow drag to locations *before* first letter and *after* last one
 //
 //  - EditableLetter
-//    - 1-6 to override horizontal extent (offet+size)
+//    - ability to override horizontal extent (offet and width)
 //    - maybe animate history for each letter (no)
 //
 //  - GridfontTextArea
@@ -12,12 +14,13 @@
 //
 //  - maybe save example text font-size/spacing/etc to .gf
 //
-//  - change "toggle" to show/hide
-//
 //  - check all class imports and with GlobalFont
 //  - general code review
 //  - test on newer windows, newer mac
 //  - slim down gf file by changing stroke to (Int,Int)
+// *- figure out how to associate file with .gf so (at least on a mac)
+//     double-clicking opens font in the editor
+//  - add close button to font compare
 //
 //  - JWrapper
 //    - mounting mac installer doesn't automatically show drive in finder

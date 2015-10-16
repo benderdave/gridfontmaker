@@ -31,6 +31,11 @@ class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
   fileMenu.add(saveAsItem)
 
   fileMenu.addSeparator
+  val compareItem = MenuItem("Compare with..", () => gui.addFontCompare)
+  compareItem.setAccelerator(KeyStroke.getKeyStroke('M', shortcutKey))
+  fileMenu.add(compareItem)
+
+  fileMenu.addSeparator
   val quitItem = MenuItem("Quit", () => 
     gui.dispatchEvent(new WindowEvent(gui, WindowEvent.WINDOW_CLOSING)))
   quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', shortcutKey))

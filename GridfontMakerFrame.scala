@@ -77,7 +77,6 @@ class GridfontMakerFrame(var filename: String) extends JFrame
   def getSaveName: String = {
     val (base, ext) = getBaseExt(filename)
     if (base != "") s"${base}.${ext}"
-    //else if (gfont.name != "") s"${gfont.name}.${ext}" -- don't be cute
     else ""
   }
 
@@ -132,9 +131,29 @@ class GridfontMakerFrame(var filename: String) extends JFrame
         val gfont = fromJson[Font](encodedFontStr)
         GridfontMakerFrame.gfont = gfont
         alphAndNameArea.namePanel.setFontName(gfont.name, true)
+        alphAndNameArea.alphPanel.textArea.setText(('a' to 'z').mkString)
         savedFontState = toJson(gfont)
         textPanel.textArea.setText(gfont.example_text, true)
         actionStack.reset
+        repaint()
+      } catch {
+        case e: Exception => println(e)
+      }
+    }
+  }
+
+  def addFontCompare: Unit = {
+    val openchooser = new JFileChooser(gfDirectory)
+    openchooser.setFileFilter(gfFilter)
+    val returnVal = openchooser.showOpenDialog(this)
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      gfDirectory = openchooser.getCurrentDirectory()
+      val file = openchooser.getSelectedFile()
+      val newFilename = file.toString
+      val encodedFontStr = Source.fromFile(newFilename).getLines.mkString
+      try {
+        val compareFont = fromJson[Font](encodedFontStr)
+        alphAndNameArea.addCompare(compareFont)
         repaint()
       } catch {
         case e: Exception => println(e)

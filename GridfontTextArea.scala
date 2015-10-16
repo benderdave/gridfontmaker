@@ -19,10 +19,11 @@ class ObservableText extends Observable {
 }
 
 class ExampleTextPanel(initialSize: Double = 16.0, val initialText: String)
-    extends JPanel {
+    extends JPanel with GlobalFont {
   setBackground(Color.gray)
-  val textArea = new GridfontTextArea(initialSize, initialText, true, true)
-  textArea.obs.addObserver(new Observer with GlobalFont {
+  val textArea =
+    new GridfontTextArea(() => gfont, initialSize, initialText, true, true)
+  textArea.obs.addObserver(new Observer {
     override def update(o: Observable, text: Any): Unit = 
       gfont.example_text = text.asInstanceOf[String]
   })
@@ -30,12 +31,15 @@ class ExampleTextPanel(initialSize: Double = 16.0, val initialText: String)
   add(textArea)
 }
 
-class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
-    var editable: Boolean = false, centered: Boolean = false) extends JPanel 
-    with Observer with MouseMotionListener with MouseListener with KeyListener 
+class GridfontTextArea(getFont: () => Font, initialSize: Double = 16.0, 
+    val initialText: String = "", var editable: Boolean = false,
+    centered: Boolean = false) extends JPanel with Observer 
+    with MouseMotionListener with MouseListener with KeyListener 
     with FocusListener with GlobalActionStack {
-  import GridfontMaker._
-  import GridfontMakerFrame._
+  import GridfontMaker.{NumRows, NumCols, AspectRatio, getRowCol}
+  import GridfontMakerFrame.smallLineStroke
+
+  def gfont = getFont()
 
   val obs = new ObservableText
 
@@ -164,9 +168,26 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
       up
     else if (k == KeyEvent.VK_DOWN || k == KeyEvent.VK_KP_DOWN)
       down
+    else {
+      val tinyAdjust = (e.isAltDown || e.isMetaDown || e.isControlDown)
+      if (tinyAdjust && (e.getKeyCode == KeyEvent.VK_PLUS || e.getKeyCode ==
+        KeyEvent.VK_EQUALS))
+        adjustSize(gfontSize + 0.2)
+      else if (tinyAdjust && e.getKeyCode == KeyEvent.VK_MINUS)
+        adjustSize(gfontSize - 0.2)
+    }
   }
 
   override def keyReleased(e: KeyEvent): Unit = {}
+
+  def adjustSize(newSize: Double): Unit = {
+    actions.add(SizeChangeAction(this, () => {
+      setSize(Math.min(80.0, Math.max(4.0, newSize)))
+      calculatePreferredSize
+      repaint()
+      getParent().revalidate
+    }))
+  }
 
   override def keyTyped(e: KeyEvent): Unit = {
     val c = e.getKeyChar.toLower
@@ -176,23 +197,10 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
       backspace
     else if (editable && (c.isLetter || c == ' ' || c == '\n'))
       insert(c)
-    else if (c == '+') {
-      val newSize = Math.min(80.0, gfontSize + 1.0)
-      actions.add(SizeChangeAction(this, () => {
-        setSize(newSize)
-        calculatePreferredSize
-        repaint()
-        getParent().revalidate
-      }))
-    } else if (c == '-') {
-      val newSize = Math.max(4.0, gfontSize - 1.0)
-      actions.add(SizeChangeAction(this, () => {
-        setSize(newSize)
-        calculatePreferredSize
-        repaint()
-        getParent().revalidate
-      }))
-    }
+    else if (c == '+')
+      adjustSize(gfontSize + 1.0)
+    else if (c == '-')
+      adjustSize(gfontSize - 1.0)
   }
 
   override def focusGained(e: FocusEvent): Unit = {}
@@ -206,7 +214,7 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
 
   def setSize(newSize: Double): Unit = {
     gfontSize = newSize
-    letterWidth = (gfontSize*2).toInt
+    letterWidth = (gfontSize*2.0).toInt
     quantaWidth = letterWidth / NumCols.toDouble
     letterHeight = (letterWidth/AspectRatio).toInt
     lineStroke = new BasicStroke((newSize/5.2).toFloat, CAP_ROUND, JOIN_BEVEL)
@@ -291,14 +299,18 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
     }
   }
 
+  def updateQuantaOffsets: Unit = {
+    lineQuantaOffsets = getCharacterOffsets(lines)
+    lineQuantaLengths = lineQuantaOffsets.map(line => line(line.length-1))
+  }
+
   def setText(newText: String, noChange: Boolean = false): Unit = {
     val textChange = ExampleTextChangeAction(() => {
       text = newText
       lines = newText.split("\n", newText.length)
       lineLengths = lines.map(_.length)
       maxLineLen = lineLengths.max
-      lineQuantaOffsets = getCharacterOffsets(lines)
-      lineQuantaLengths = lineQuantaOffsets.map(line => line(line.length-1))
+      updateQuantaOffsets
       calculatePreferredSize
       repaint()
       if (getParent() != null)
@@ -355,5 +367,8 @@ class GridfontTextArea(initialSize: Double = 16.0, val initialText: String = "",
     if (editable && hasFocus) drawCarrot(g2)
   }
 
-  override def update(o: Observable, arg: Any): Unit = repaint()
+  override def update(o: Observable, arg: Any): Unit = {
+    updateQuantaOffsets
+    repaint()
+  }
 }
