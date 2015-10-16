@@ -35,7 +35,7 @@ help anyone interested in gridfonts create and share them.
 
 # Running
 
-Right now you can run GridfontMaker (without compiling it yourself) in two ways,
+You can run GridfontMaker (without compiling it yourself) in two ways,
 from a wrapped application
 specific to your operating system, or straight from the **jar** file.
 
