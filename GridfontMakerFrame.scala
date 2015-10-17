@@ -16,7 +16,7 @@ trait GlobalFont {
   def gfont: Font = GridfontMakerFrame.gfont
 }
 
-class GridfontMakerFrame(var filename: String) extends JFrame 
+class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame 
     with WindowListener with GlobalFont {
   setBackground(Color.black)
   val alphAndNameArea = new AlphabetAndNameArea
@@ -28,7 +28,7 @@ class GridfontMakerFrame(var filename: String) extends JFrame
   add(editPanel, BorderLayout.CENTER)
   add(textPanel, BorderLayout.SOUTH)
   addWindowListener(this)
-  val gridfontMenuBar = new GridfontMenuBar(this)
+  val gridfontMenuBar = new GridfontMenuBar(this, isMac)
   setJMenuBar(gridfontMenuBar)
 
   var actionStack: ActionStack = 
@@ -36,13 +36,15 @@ class GridfontMakerFrame(var filename: String) extends JFrame
 
   var savedFontState = toJson(gfont)
 
+  var gfDirectory = new File(".")
+  val gfFilter = new FileNameExtensionFilter("Gridfont files", "gf")
+
+  if (isMac) macSpecificSetup
+
   def hasChanges: Boolean = {
     val currentState = toJson(gfont)
     savedFontState != currentState
   }
-
-  var gfDirectory = new File(".")
-  val gfFilter = new FileNameExtensionFilter("Gridfont files", "gf")
 
   def getBaseExt(fname: String): (String, String) = {
     val baseExt = fname.split('.')
@@ -66,6 +68,8 @@ class GridfontMakerFrame(var filename: String) extends JFrame
         case _ =>
       }
     }
+    // NOTE: must explicitly exit when running under JWrapper on OSX -- lame
+    System.exit(0)
   }
   override def windowActivated(e: WindowEvent): Unit = {}
   override def windowClosed(e: WindowEvent): Unit = {}
@@ -160,6 +164,35 @@ class GridfontMakerFrame(var filename: String) extends JFrame
       }
     }
   }
+
+  def macSpecificSetup: Unit = {
+    // NOTE: dynamically load so we don't try to find mac-specific classes on
+    //   other platforms (e.g. AboutHandler)
+    Class.forName("farg.MacOSXInit").getConstructor().newInstance()
+      .asInstanceOf[PlatformSpecificInit].initialize(this)
+  }
+}
+
+trait PlatformSpecificInit {
+  def initialize(frame: JFrame): Unit
+}
+
+class MacOSXInit extends PlatformSpecificInit {
+  override def initialize(frame: JFrame): Unit = {
+    import com.apple.eawt._
+    import com.apple.eawt.AppEvent._
+
+    val macApplication = Application.getApplication
+     
+    macApplication.setAboutHandler(new AboutHandler {
+      def handleAbout(e: AboutEvent) {
+        JOptionPane.showMessageDialog(frame,
+          "Version 1.2\nWritten by Dave Bender\nFluid Analogies Research Group (FARG)\nIndiana University",
+          "GridfontMaker",
+          JOptionPane.PLAIN_MESSAGE)
+      }
+    })
+  }
 }
 
 object GridfontMakerFrame {
@@ -170,7 +203,7 @@ object GridfontMakerFrame {
   var gfont: Font = null
   var gui: GridfontMakerFrame = null
 
-  def enable(gfont: Font, filename: String): Unit = {
+  def enable(gfont: Font, filename: String, isMac: Boolean): Unit = {
     GridfontMakerFrame.gfont = gfont
     val screenSize = Toolkit.getDefaultToolkit().getScreenSize()
     val screenFraction = 0.9
@@ -178,9 +211,9 @@ object GridfontMakerFrame {
       (screenSize.getWidth() * screenFraction).toInt,
       (screenSize.getHeight() * screenFraction).toInt
     )
-    gui = new GridfontMakerFrame(filename)
+    gui = new GridfontMakerFrame(filename, isMac)
     gui.setDefaultCloseOperation(DISPOSE_ON_CLOSE)
-    gui.setSize(preferredSize)
+    gui.setPreferredSize(preferredSize)
     gui.validate
 
     SwingUtilities.invokeAndWait(new Runnable() {

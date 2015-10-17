@@ -79,8 +79,10 @@ class EditPanel(updatables: Seq[Observer]) extends JPanel with GlobalFont with
             copyLetterTo(draggingLetter.get, dragTargets.head)
           case DRAGMOVE =>
             if (dragTargets.length == 2) {
-              moveLetterBetween(draggingLetter.get, dragTargets(0), 
-                dragTargets(1))
+              val todrag = draggingLetter.get
+              if (todrag != dragTargets(0) && todrag != dragTargets(1))
+                moveLetterBetween(draggingLetter.get, dragTargets(0), 
+                  dragTargets(1))
             }
           case NODRAG =>
         }

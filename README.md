@@ -41,13 +41,15 @@ specific to your operating system, or straight from the **jar** file.
 
 ## Pre-built apps
 
-Download the appropriate link for your OS and run it as you
+Download the appropriate link for your OS and install/run it as you
 would a normal program. This is the easiest option because you don't have to
 install anything else.
 
 &nbsp;&nbsp;&nbsp;&nbsp; [MacOS](https://www.dropbox.com/s/rizelu5tle1o9yw/GridfontMaker-macos64-offline.dmg?dl=0)
 
-&nbsp;&nbsp;&nbsp;&nbsp; [Linux](https://www.dropbox.com/s/b2d8055r07yc7pp/GridfontMaker-linux64-offline.tar?dl=0)
+&nbsp;&nbsp;&nbsp;&nbsp; [Linux 64-bit](https://www.dropbox.com/s/b2d8055r07yc7pp/GridfontMaker-linux64-offline.tar?dl=0)
+
+&nbsp;&nbsp;&nbsp;&nbsp; [Linux 32-bit](https://www.dropbox.com/s/eta3lsjpqtl8gd7/GridfontMaker-linux32-offline.tar?dl=0)
 
 &nbsp;&nbsp;&nbsp;&nbsp; [Windows 64-bit](https://www.dropbox.com/s/hgnhzg3t5kod4dc/GridfontMaker-windows64-offline.exe?dl=0)
 

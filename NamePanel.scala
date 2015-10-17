@@ -20,11 +20,11 @@ class NamePanel extends JPanel with GlobalFont with GlobalActionStack {
     if (gfont.name != newName)
       setFontName(newName, false, false)
   })
-  nameField.setBackground(Color.gray)
-  nameField.setForeground(Color.white)
   nameField.setBorder(BorderFactory.createEmptyBorder())
   nameField.setHorizontalAlignment(SwingConstants.CENTER)
   nameField.setFont(nameFont)
+  nameField.setBackground(Color.gray)
+  nameField.setForeground(Color.white)
   add(nameField)
 
   def setFontName(name: String, noChange: Boolean = false, 

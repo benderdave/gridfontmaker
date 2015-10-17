@@ -7,8 +7,8 @@ import java.awt.event.WindowEvent
 import GUIUtils.{MenuItem, MenuItemRef}
 
 // ----------------------------------------------------------------------------
-class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
-    GlobalActionStack {
+class GridfontMenuBar(gui: GridfontMakerFrame, isMac: Boolean) extends JMenuBar 
+    with GlobalActionStack {
   val shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
 
   val fileMenu = new JMenu("File")
@@ -35,11 +35,13 @@ class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
   compareItem.setAccelerator(KeyStroke.getKeyStroke('M', shortcutKey))
   fileMenu.add(compareItem)
 
-  fileMenu.addSeparator
-  val quitItem = MenuItem("Quit", () => 
-    gui.dispatchEvent(new WindowEvent(gui, WindowEvent.WINDOW_CLOSING)))
-  quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', shortcutKey))
-  fileMenu.add(quitItem)
+  if (!isMac) {
+    fileMenu.addSeparator
+    val quitItem = MenuItem("Quit", () => 
+      gui.dispatchEvent(new WindowEvent(gui, WindowEvent.WINDOW_CLOSING)))
+    quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', shortcutKey))
+    fileMenu.add(quitItem)
+  }
 
   val editMenu = new JMenu("Edit")
   add(editMenu)
@@ -81,12 +83,14 @@ class GridfontMenuBar(gui: GridfontMakerFrame) extends JMenuBar with
   })
   gridMenu.add(toggleShowCentralZoneItem)
 
+  val helpMenu = new JMenu("Help")
+  add(helpMenu)
   var helpFrame: Option[HelpFrame] = None
-  val helpItem = MenuItem("Help", () => {
+  val helpItem = MenuItem("Show instructions", () => {
     if (helpFrame.isEmpty) {
       val (w, h) = ((getParent.getWidth/3).toInt, (getParent.getHeight*0.75).toInt)
       helpFrame = Some(new HelpFrame(this, w, h))
     }
   })
-  add(helpItem)
+  helpMenu.add(helpItem)
 }

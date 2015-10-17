@@ -27,6 +27,7 @@ class CompareAlphabetPanel(font: Font) extends JPanel {
       p.revalidate()
     }
   })
+  closeButton.setBackground(Color.gray)
   closeButton.setBorder(new EmptyBorder(10, 10, 10, 10))
   closeButton.setEnabled(false)
   setFocusable(true)

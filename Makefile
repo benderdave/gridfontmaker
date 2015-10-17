@@ -35,7 +35,7 @@ gridfontmaker.jar: $(TARGET_FILE)
 runscala: Makefile
 	echo "#! /usr/bin/env bash" > runscala
 	echo "# Scala runner generated" `date` >> runscala
-	echo "scala $(SCALA_FLAGS)" '"$$@"' >> runscala
+	echo "scala -nc $(SCALA_FLAGS)" '"$$@"' >> runscala
 	chmod a+x runscala
 
 runfsc:
