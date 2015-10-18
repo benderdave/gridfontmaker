@@ -28,7 +28,10 @@ The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 The gridfont micro-domain was created for studying *analogy*, the cognitive process
 that underlies most thinking. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work in the gridfont domain by John 
 Rehling and Gary McGraw. That said, we've found that designing gridfonts can be a
-creative activity that stands on its own. 
+creative activity that stands on its own, independent of what the gridfont domain might 
+have to say about Cognitive Science. Beginners can create a 
+new gridfont in just a few minutes without any prior experience in typeface 
+design.
 
 GridfontMaker is provided to
 help anyone interested in gridfonts create and share them.
@@ -65,12 +68,11 @@ anything.
 
 * Clone the source
 * Make sure you have a recent version of java
-* Run with "java -jar gridfontmaker.jar" (on some systems you can just
-  double-click on the jar file.)
+* Run with "java -jar gridfontmaker.jar".
 
 # Building and running from source
 
-Right now the only way to build GridfontMaker is on a unix-like system with
+If you'd prefer to build GridfontMaker you need a unix-like system with
 *make*, *java*, and *scala*.
 
 * Clone the source
