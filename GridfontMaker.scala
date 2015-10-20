@@ -1,5 +1,7 @@
 // TODO
 //  - bug: initial size isn't correct (showing central zone reveals this)
+//  - bug: after copy need to automatically select new letter (drop target)
+//  - bug: copy needs to notify gridfonttext areas of change
 //
 //  - EditPanel
 //    - allow drag to locations *before* first letter and *after* last one

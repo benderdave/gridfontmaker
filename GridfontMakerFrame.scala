@@ -16,6 +16,11 @@ trait GlobalFont {
   def gfont: Font = GridfontMakerFrame.gfont
 }
 
+// ----------------------------------------------------------------------------
+trait PlatformSpecificInit {
+  def initialize(frame: JFrame): Unit
+}
+
 class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame 
     with WindowListener with GlobalFont {
   setBackground(Color.black)
@@ -170,28 +175,6 @@ class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame
     //   other platforms (e.g. AboutHandler)
     Class.forName("farg.MacOSXInit").getConstructor().newInstance()
       .asInstanceOf[PlatformSpecificInit].initialize(this)
-  }
-}
-
-trait PlatformSpecificInit {
-  def initialize(frame: JFrame): Unit
-}
-
-class MacOSXInit extends PlatformSpecificInit {
-  override def initialize(frame: JFrame): Unit = {
-    import com.apple.eawt._
-    import com.apple.eawt.AppEvent._
-
-    val macApplication = Application.getApplication
-     
-    macApplication.setAboutHandler(new AboutHandler {
-      def handleAbout(e: AboutEvent) {
-        JOptionPane.showMessageDialog(frame,
-          "Version 1.2\nWritten by Dave Bender\nFluid Analogies Research Group (FARG)\nIndiana University",
-          "GridfontMaker",
-          JOptionPane.PLAIN_MESSAGE)
-      }
-    })
   }
 }
 

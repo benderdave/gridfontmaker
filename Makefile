@@ -1,3 +1,5 @@
+MACH=$(shell uname)
+
 BUILD_ROOT=./_build
 BUILD_CLASSDIR=$(BUILD_ROOT)/classes
 
@@ -11,7 +13,10 @@ COMPILE_SCALA=@fsc -reset && ./runfsc $(SCALA_FLAGS)
 
 TARGET_FILE=$(BUILD_CLASSDIR)/farg/GridfontMaker.class
 
-SOURCE_FILES=$(wildcard *.scala)
+SOURCE_FILES=$(filter-out MacOSXInit.scala,$(wildcard *.scala))
+ifeq ($(MACH),Darwin)
+  SOURCE_FILES+=MacOSXInit.scala
+endif
 
 .PHONY: all clean run tags
 
