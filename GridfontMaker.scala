@@ -2,22 +2,41 @@
 //  - bug: initial size isn't correct (showing central zone reveals this)
 //  - bug: after copy need to automatically select new letter (drop target)
 //  - bug: copy needs to notify gridfonttext areas of change
+//  - bug: after "new", alphabet and/or example text are messed up. And the
+//         example text area isn't saved
+//  - bug: some actions can't be undone
+//  - bug: sometimes a click (to add a single stroke) doesn't work. Maybe it's 
+//         because there's a slight drag? I don't know.
 //
 //  - EditPanel
 //    - allow drag to locations *before* first letter and *after* last one
 //
 //  - EditableLetter
-//    - ability to override horizontal extent (offet and width)
-//    - maybe animate history for each letter (no)
+//    - have to have the ability to override horizontal offet and width (float)
 //
 //  - GridfontTextArea
 //    - add highlight/cut/paste
-//    - either have configurable intro-letter/row spacing
+//    - have configurable inter-letter/row spacing
 //
 //  - maybe save example text font-size/spacing/etc to .gf
 //
 //  - check all class imports and with GlobalFont
 //  - general code review
+//    - ActionStack.scala
+//    - AlphabetPanel.scala
+//    - CommandLineParser.scala
+//    - EditPanel.scala
+//    - EditableLetter.scala
+//    - Font.scala
+//    - GridfontMaker.scala
+//    - GridfontMakerFrame.scala
+//    - GridfontTextArea.scala
+//    - GuiUtil.scala
+//    - HelpFrame.scala
+//    - Letter.scala
+//    - MacOSXInit.scala
+//    - MenuBar.scala
+//    - NamePanel.scala
 //  - use adapters instead of listeners for brevity
 //  - test on newer windows, newer mac
 //  - slim down gf file by changing stroke to (Int,Int)
