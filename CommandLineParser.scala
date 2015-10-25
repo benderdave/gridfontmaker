@@ -46,7 +46,7 @@ case class OptionalArg(switch: String, default: Any, action: _ => Unit) {
         )
       }
     } catch {
-      case ex: CommandLineArgError => System.err.println(ex.message); System.exit(-1) // FIXME: Probably shouldn't exit; better way?
+      case ex: CommandLineArgError => System.err.println(ex.message); throw(ex)
     }
   }
 
@@ -61,7 +61,7 @@ case class OptionalArg(switch: String, default: Any, action: _ => Unit) {
         )
       }
     } catch {
-      case ex: CommandLineArgError => System.err.println(ex.message); System.exit(-1) // FIXME: Probably shouldn't exit; better way?
+      case ex: CommandLineArgError => System.err.println(ex.message); throw(ex)
     }
   }
 }

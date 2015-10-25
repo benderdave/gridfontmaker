@@ -106,11 +106,10 @@ class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       gfDirectory = savechooser.getCurrentDirectory()
       val file = savechooser.getSelectedFile()
-      val newFilename = file.toString
+      val newFilename = file.getCanonicalFile.toString()
       val newFilenameWithExt = if (newFilename.endsWith(".gf")) newFilename
-        else newFilename + ".gf"
+                               else newFilename + ".gf"
       filename = newFilenameWithExt
-      println(filename)
       savedFontState = gfont.save(filename)
     }
   }
@@ -120,7 +119,6 @@ class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame
     textPanel.textArea.clear
     editPanel.clearAll()
     filename = ""
-    gfont.clear
     savedFontState = toJson(gfont)
     actionStack.reset
     repaint()
@@ -146,7 +144,12 @@ class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame
         actionStack.reset
         repaint()
       } catch {
-        case e: Exception => println(e)
+        case e: Exception => {
+          println(e)
+          JOptionPane.showMessageDialog(this,
+            s"There was a problem loading $filename", "Open file failed",
+            JOptionPane.ERROR_MESSAGE)
+        }
       }
     }
   }
@@ -165,7 +168,12 @@ class GridfontMakerFrame(var filename: String, isMac: Boolean) extends JFrame
         alphAndNameArea.addCompare(compareFont)
         repaint()
       } catch {
-        case e: Exception => println(e)
+        case e: Exception => {
+          println(e)
+          JOptionPane.showMessageDialog(this,
+            s"There was a problem loading $filename", "Open compare file failed",
+            JOptionPane.ERROR_MESSAGE)
+        }
       }
     }
   }

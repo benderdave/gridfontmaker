@@ -10,7 +10,7 @@ import javax.swing.JPanel
 import java.util.{Observer, Observable}
 
 // ----------------------------------------------------------------------------
-class EditPanel(updatables: Seq[Observer]) extends JPanel with GlobalFont with
+class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont with
     GlobalActionStack {
   import EditableLetter._
 
@@ -126,6 +126,7 @@ class EditPanel(updatables: Seq[Observer]) extends JPanel with GlobalFont with
           for ((begin, end) <- src.letter.getStrokes)
             yield Stroke(begin, end) 
         }
+        dst.observableLetter.changed
       }))
     }
   }

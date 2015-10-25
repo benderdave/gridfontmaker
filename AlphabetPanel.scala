@@ -10,8 +10,8 @@ import GUIUtils.Button
 // ----------------------------------------------------------------------------
 class AlphabetPanel extends JPanel with GlobalFont {
   setBackground(Color.gray)
-  val textArea = new GridfontTextArea(() => gfont, 14.0, ('a' to 'z').mkString,
-    false, true)
+  val textArea = new GridfontTextArea(() => gfont, 14.0,
+    GridfontMaker.fullAlphabetString, false, true)
   add(textArea)
 }
 
@@ -33,8 +33,8 @@ class CompareAlphabetPanel(font: Font) extends JPanel {
   setFocusable(true)
 
   add(closeButton, BorderLayout.WEST)
-  val textArea = new GridfontTextArea(() => font, 14.0, ('a' to 'z').mkString, 
-    false, true)
+  val textArea = new GridfontTextArea(() => font, 14.0,
+    GridfontMaker.fullAlphabetString, false, true)
   add(textArea, BorderLayout.CENTER)
 
   val closer = new MouseAdapter {
@@ -54,6 +54,7 @@ class AlphabetAndNameArea extends JPanel {
   setLayout(new BoxLayout(this, BoxLayout.Y_AXIS))
   setBorder(new EmptyBorder(0, 0, 0, 0))
   setFocusable(true)
+
   val namePanel = new NamePanel
   add(namePanel)
   val alphPanel = new AlphabetPanel
