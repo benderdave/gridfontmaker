@@ -7,7 +7,8 @@ case class Stroke(start: Int, end: Int)
 
 // ----------------------------------------------------------------------------
 case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) {
-  import GridfontMaker._
+  import GridfontMaker.{NumRows, NumCols, getRowCol, rowColToIndex}
+  import Letter.getStrokesRowsCols
 
   def addStroke(start: Int, end: Int): Unit = {
     if (start != end) {
@@ -23,13 +24,11 @@ case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) 
 
   def getStrokes = for (stroke <- strokes) yield (stroke.start, stroke.end)
 
-  def isColInAnyStroke(col: Int): Boolean = {
-    getStrokes.find { case (start, end) =>
-      val (_, startcol) = getRowCol(start)
-      val (_, endcol) = getRowCol(end)
-      col == startcol || col == endcol
-    }.nonEmpty
-  }
+  def isColInAnyStroke(col: Int): Boolean = 
+    getStrokesRowsCols(strokes).exists { 
+      case (_, startRow, startCol, endRow, endCol) =>
+        col == startCol || col == endCol
+    }
 
   def leadingOffset: Int = (0 until NumCols).indexWhere(isColInAnyStroke(_))
   def trailingOffset: Int =
@@ -38,25 +37,19 @@ case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) 
 
   def clear: Unit = strokes.clear
 
-  def flipX: Unit = {
-    for (i <- 0 until strokes.length) {
-      val s = strokes(i)
-      val (startrow, startcol) = getRowCol(s.start)
-      val (endrow, endcol) = getRowCol(s.end)
-      strokes(i) = Stroke(rowColToIndex(startrow, (NumCols-1)-startcol), 
-        rowColToIndex(endrow, (NumCols-1)-endcol))
+  def flipX: Unit =
+    getStrokesRowsCols(strokes).map { 
+      case (i, startRow, startCol, endRow, endCol) =>
+        strokes(i) = Stroke(rowColToIndex(startRow, (NumCols-1)-startCol), 
+          rowColToIndex(endRow, (NumCols-1)-endCol))
     }
-  }
 
-  def flipY: Unit = {
-    for (i <- 0 until strokes.length) {
-      val s = strokes(i)
-      val (startrow, startcol) = getRowCol(s.start)
-      val (endrow, endcol) = getRowCol(s.end)
-      strokes(i) = Stroke(rowColToIndex((NumRows-1)-startrow, startcol), 
-        rowColToIndex((NumRows-1)-endrow, endcol))
+  def flipY: Unit =
+    getStrokesRowsCols(strokes).map { 
+      case (i, startRow, startCol, endRow, endCol) =>
+        strokes(i) = Stroke(rowColToIndex((NumRows-1)-startRow, startCol), 
+          rowColToIndex((NumRows-1)-endRow, endCol))
     }
-  }
 
   def rotate: Unit = {
     flipX
@@ -71,48 +64,56 @@ case class Letter(ch: String, strokes: ArrayBuffer[Stroke] = ArrayBuffer.empty) 
   def nudgeUp: Unit = {
     val strokesCopy = strokes.toList
     strokes.clear
-    for (s <- strokesCopy) {
-      val (startrow, startcol) = getRowCol(s.start)
-      val (endrow, endcol) = getRowCol(s.end)
-      if (startrow > 0 && endrow > 0)
-        strokes += Stroke(rowColToIndex(startrow-1, startcol), 
-         rowColToIndex(endrow-1, endcol))
+    getStrokesRowsCols(strokesCopy).map { 
+      case (_, startRow, startCol, endRow, endCol) =>
+        if (startRow > 0 && endRow > 0)
+          strokes += Stroke(rowColToIndex(startRow-1, startCol), 
+           rowColToIndex(endRow-1, endCol))
     }
   }
 
   def nudgeDown: Unit = {
     val strokesCopy = strokes.toList
     strokes.clear
-    for (s <- strokesCopy) {
-      val (startrow, startcol) = getRowCol(s.start)
-      val (endrow, endcol) = getRowCol(s.end)
-      if (startrow < NumRows-1 && endrow < NumRows-1)
-        strokes += Stroke(rowColToIndex(startrow+1, startcol), 
-         rowColToIndex(endrow+1, endcol))
+    getStrokesRowsCols(strokesCopy).map { 
+      case (_, startRow, startCol, endRow, endCol) =>
+        if (startRow < NumRows-1 && endRow < NumRows-1)
+          strokes += Stroke(rowColToIndex(startRow+1, startCol), 
+           rowColToIndex(endRow+1, endCol))
     }
   }
 
   def nudgeLeft: Unit = {
     val strokesCopy = strokes.toList
     strokes.clear
-    for (s <- strokesCopy) {
-      val (startrow, startcol) = getRowCol(s.start)
-      val (endrow, endcol) = getRowCol(s.end)
-      if (startcol > 0 && endcol > 0)
-        strokes += Stroke(rowColToIndex(startrow, startcol-1), 
-         rowColToIndex(endrow, endcol-1))
+    getStrokesRowsCols(strokesCopy).map { 
+      case (_, startRow, startCol, endRow, endCol) =>
+        if (startCol > 0 && endCol > 0)
+          strokes += Stroke(rowColToIndex(startRow, startCol-1), 
+           rowColToIndex(endRow, endCol-1))
     }
   }
 
   def nudgeRight: Unit = {
     val strokesCopy = strokes.toList
     strokes.clear
-    for (s <- strokesCopy) {
-      val (startrow, startcol) = getRowCol(s.start)
-      val (endrow, endcol) = getRowCol(s.end)
-      if (startcol < NumCols-1 && endcol < NumCols-1)
-        strokes += Stroke(rowColToIndex(startrow, startcol+1), 
-         rowColToIndex(endrow, endcol+1))
+    getStrokesRowsCols(strokesCopy).map { 
+      case (_, startRow, startCol, endRow, endCol) =>
+        if (startCol < NumCols-1 && endCol < NumCols-1)
+          strokes += Stroke(rowColToIndex(startRow, startCol+1), 
+           rowColToIndex(endRow, endCol+1))
+    }
+  }
+}
+
+object Letter {
+  import GridfontMaker.getRowCol
+
+  def getStrokesRowsCols(strokes: Seq[Stroke]) = {
+    for ((stroke, i) <- strokes.zipWithIndex) yield {
+      val (startRow, startCol) = getRowCol(stroke.start)
+      val (endRow, endCol) = getRowCol(stroke.end)
+      (i, startRow, startCol, endRow, endCol)
     }
   }
 }

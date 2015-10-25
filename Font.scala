@@ -5,16 +5,21 @@ import com.owlike.genson.defaultGenson._
 import java.io.PrintWriter
 
 // ----------------------------------------------------------------------------
+class IllegalLetterException extends Exception
+
 case class Font(var name: String = "", letters: Map[String,Letter] = Map.empty) {
-  val alphabet = 'a' to 'z'
+  import GridfontMaker.fullAlphabet
 
   // verify letters
-  for ((ch, letter) <- letters)
-    if (!alphabet.contains(ch.head))
-      throw new Exception("bad letter")
+  for ((ch, letter) <- letters) {
+    if (!fullAlphabet.contains(ch.head)) {
+      println(s"ERROR: illegal letter '$ch'")
+      throw new IllegalLetterException
+    }
+  }
 
   // add any missing letters
-  for (ch <- alphabet.toSet diff letters.map(_._2.ch.head).toSet)
+  for (ch <- fullAlphabet.toSet diff letters.map(_._2.ch.head).toSet)
     letters(ch.toString) = Letter(ch.toString)
 
   var example_text = "woven silk pyjamas\nexchanged for blue quartz"
@@ -27,11 +32,5 @@ case class Font(var name: String = "", letters: Map[String,Letter] = Map.empty) 
       close 
     }
     currentState
-  }
-
-  def clear: Unit = {
-    name = ""
-    example_text = ""
-    letters.foreach(_._2.clear)
   }
 }

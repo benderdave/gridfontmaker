@@ -11,11 +11,16 @@ trait GlobalActionStack {
 
 // ----------------------------------------------------------------------------
 abstract trait Action {
-  val mergable = false
   def text: String
   def doit(firstTime: Boolean): Action
   def undo: Action
-  def merge(newer: Action): Action = ???
+  def merge(newer: Action): Action = newer
+  def canMergeWith(other: Action): Boolean = false
+}
+
+abstract trait MergableAction extends Action {
+  override def merge(newer: Action): Action
+  override def canMergeWith(other: Action): Boolean = getClass == other.getClass
 }
 
 // ----------------------------------------------------------------------------
@@ -23,64 +28,55 @@ class ActionStack(undoGui: JMenuItem, redoGui: JMenuItem) {
   var future: ArrayStack[Action] = new ArrayStack[Action]
   var past: ArrayStack[Action] = new ArrayStack[Action]
 
-  updateMenu
+  updateMenuItems
   
   def reset: Unit = {
     future.clear
     past.clear
-    updateMenu
+    updateMenuItems
   }
   
-  def canMerge(newer: Action): Boolean = {
+  def canMerge(current: Action): Boolean = {
     if (past.isEmpty) false
-    else {
-      val older = past.head
-      older.getClass == newer.getClass &&
-      older.mergable && newer.mergable
-    }
+    else past.head.canMergeWith(current)
   }
 
   def add(a: Action): Action = {
     future.clear
     val toinsert = if (canMerge(a)) past.pop.merge(a)
                    else a
-    past.push(toinsert.doit(true))
-    updateMenu
+    past.push(toinsert.doit(firstTime=true))
+    updateMenuItems
     toinsert
   }
   
   def undo: Unit = 
     if (past.nonEmpty) {
       future.push(past.pop.undo)
-      updateMenu
+      updateMenuItems
     }
   
   def redo: Unit =
     if (future.nonEmpty) {
       past.push(future.pop.doit(false))
-      updateMenu
+      updateMenuItems
     }
 
-  def updateMenu: Unit = {
-    if (past.nonEmpty) {
-      undoGui.setText(s"Undo ${past.head.text}")
-      undoGui.setEnabled(true)
-    } else {
-      undoGui.setText("Undo")
-      undoGui.setEnabled(false)
-    }
+  def updateMenuItem(kind: String, gui: JMenuItem, time: ArrayStack[Action]):
+      Unit = {
+    gui.setText(if (time.nonEmpty) s"$kind ${time.head.text}" else kind)
+    gui.setEnabled(if (time.nonEmpty) true else false)
+  }
 
-    if (future.nonEmpty) {
-      redoGui.setText(s"Redo ${future.head.text}")
-      redoGui.setEnabled(true)
-    } else {
-      redoGui.setText("Redo")
-      redoGui.setEnabled(false)
-    }
+  def updateMenuItems: Unit = {
+    updateMenuItem("Undo", undoGui, past)
+    updateMenuItem("Redo", redoGui, future)
   }
 }
 
 // ----------------------------------------------------------------------------
+// specific actions from here on
+
 class LetterChangeAction(msg: String, guiLetter: EditableLetter, f: () => Unit) 
     extends Action with GlobalFont {
   val ch = guiLetter.letter.ch
@@ -88,12 +84,12 @@ class LetterChangeAction(msg: String, guiLetter: EditableLetter, f: () => Unit)
 
   def text: String = msg
 
-  def doit(firstTime: Boolean): Action = {
+  override def doit(firstTime: Boolean): Action = {
     f()
     this
   }
 
-  def undo: Action = {
+  override def undo: Action = {
     gfont.letters(ch) = fromJson[Letter](before)
     guiLetter.repaint()
     guiLetter.observableLetter.changed()
@@ -128,12 +124,12 @@ class OrderAction(msg: String, panel: EditPanel, f: () => Unit) extends Action {
 
   def text: String = msg
 
-  def doit(firstTime: Boolean): Action = {
+  override def doit(firstTime: Boolean): Action = {
     f()
     this
   }
 
-  def undo: Action = {
+  override def undo: Action = {
     panel.removeAll()
     orderBefore.foreach(ch => panel.add(panel.guiLetters(ch)))
     panel.revalidate()
@@ -153,12 +149,12 @@ class GridAction(msg: String, f: () => Unit) extends Action with GlobalFont {
 
   def text: String = msg
 
-  def doit(firstTime: Boolean): Action = {
+  override def doit(firstTime: Boolean): Action = {
     f()
     this
   }
 
-  def undo: Action = {
+  override def undo: Action = {
     GridfontMakerFrame.gfont = fromJson[Font](before)
     GridfontMakerFrame.gui.repaint()
     this
@@ -166,20 +162,20 @@ class GridAction(msg: String, f: () => Unit) extends Action with GlobalFont {
 }
 
 case class GridClearAction(f: () => Unit) extends GridAction("clear grid", f)
-case class GridClearOthersAction(f: () => Unit) extends GridAction("clear other letters", f)
+case class GridClearOthersAction(f: () => Unit) 
+  extends GridAction("clear other letters", f)
 
-case class NameChangeAction(f: (Boolean) => Unit) extends Action 
+case class NameChangeAction(f: (Boolean) => Unit) extends MergableAction 
     with GlobalFont {
-  override val mergable = true
   var before = gfont.name
   def text: String = "change name"
 
-  def doit(firstTime: Boolean): Action = {
+  override def doit(firstTime: Boolean): Action = {
     f(firstTime)
     this
   }
 
-  def undo: Action = {
+  override def undo: Action = {
     GridfontMakerFrame.gui.alphAndNameArea.namePanel.setFontName(before, true)
     this
   }
@@ -190,18 +186,17 @@ case class NameChangeAction(f: (Boolean) => Unit) extends Action
   }
 }
 
-case class ExampleTextChangeAction(f: () => Unit) extends Action 
+case class ExampleTextChangeAction(f: () => Unit) extends MergableAction 
     with GlobalFont {
-  override val mergable = true
   var before = gfont.example_text
   def text: String = "change example text"
 
-  def doit(firstTime: Boolean): Action = {
+  override def doit(firstTime: Boolean): Action = {
     f()
     this
   }
 
-  def undo: Action = {
+  override def undo: Action = {
     GridfontMakerFrame.gui.textPanel.textArea.setText(before, true)
     this
   }
@@ -213,17 +208,16 @@ case class ExampleTextChangeAction(f: () => Unit) extends Action
 }
 
 case class SizeChangeAction(textArea: GridfontTextArea, f: () => Unit)
-    extends Action {
-  override val mergable = true
+    extends MergableAction {
   var before = textArea.gfontSize
   def text: String = "change font size"
 
-  def doit(firstTime: Boolean): Action = {
+  override def doit(firstTime: Boolean): Action = {
     f()
     this
   }
 
-  def undo: Action = {
+  override def undo: Action = {
     textArea.setSize(before)
     textArea.calculatePreferredSize
     textArea.repaint()
