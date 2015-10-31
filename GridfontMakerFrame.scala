@@ -199,8 +199,8 @@ object GridfontMakerFrame {
     val screenSize = Toolkit.getDefaultToolkit().getScreenSize()
     val screenFraction = 0.9
     val preferredSize = new Dimension(
-      (screenSize.getWidth() * screenFraction).toInt,
-      (screenSize.getHeight() * screenFraction).toInt
+      (screenSize.getWidth * screenFraction).toInt,
+      (screenSize.getHeight * screenFraction).toInt
     )
     gui = new GridfontMakerFrame(filename, isMac)
     gui.setDefaultCloseOperation(DISPOSE_ON_CLOSE)

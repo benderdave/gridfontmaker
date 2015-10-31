@@ -26,8 +26,8 @@ The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 (https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/benzene-etc.png)
 
 The gridfont micro-domain was created for studying *analogy*, the cognitive process
-that underlies most thinking. See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work in the gridfont domain by John 
-Rehling and Gary McGraw. That said, we've found that designing gridfonts can be a
+that underlies most thinking. (See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work in the gridfont domain by John 
+Rehling and Gary McGraw.) Even so, we've found that designing gridfonts can be a
 creative activity that stands on its own, independent of what the gridfont domain might 
 have to say about Cognitive Science. Beginners can create a 
 new gridfont in just a few minutes without any prior experience in typeface 
@@ -97,7 +97,7 @@ share them!
 
 # Legal
 
-GridfontMaker is written in scala and uses the [Genson](http://owlike.github.io/genson/)
+GridfontMaker is written in [scala](http://www.scala-lang.org) and uses the [Genson](http://owlike.github.io/genson/)
 library for (de)serializing. License notices for these projects are included.
 * [Genson](https://raw.githubusercontent.com/benderdave/gridfontmaker/master/GENSON_LICENSE)
 * [Scala](https://raw.githubusercontent.com/benderdave/gridfontmaker/master/SCALA_LICENSE)

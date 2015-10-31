@@ -3,21 +3,22 @@ package farg
 import java.io.IOException
 import java.net.URL
 import java.awt.Dimension
-import java.awt.event.{WindowListener, WindowEvent}
+import java.awt.event.{WindowAdapter, WindowEvent}
 import javax.swing.{JFrame, SwingUtilities, JScrollPane, JEditorPane,
  ScrollPaneConstants}
 import javax.swing.WindowConstants.DISPOSE_ON_CLOSE
 import javax.swing.border.EmptyBorder
 
 // ----------------------------------------------------------------------------
-class HelpFrame(val menu: GridfontMenuBar, width: Int, height: Int) 
-    extends JFrame with WindowListener {
+class HelpFrame(val menu: GridfontMenuBar, width: Int, height: Int, 
+    helpFile: URL) extends JFrame {
   setDefaultCloseOperation(DISPOSE_ON_CLOSE)
-  addWindowListener(this)
+  addWindowListener(new WindowAdapter {
+    override def windowClosing(e: WindowEvent): Unit = menu.helpFrame = None
+  })
   val scrollpane = new JScrollPane(new JEditorPane {
     setBorder(new EmptyBorder(50, 50, 50, 50))
     setEditable(false)
-    val helpFile = new URL("file:./help.html")
     try {
       setPage(helpFile)
     } catch {
@@ -34,11 +35,4 @@ class HelpFrame(val menu: GridfontMenuBar, width: Int, height: Int)
       setVisible(true)
     }
   })
-  override def windowClosing(e: WindowEvent): Unit = menu.helpFrame = None
-  override def windowActivated(e: WindowEvent): Unit = {}
-  override def windowClosed(e: WindowEvent): Unit = {}
-  override def windowDeactivated(e: WindowEvent): Unit = {}
-  override def windowIconified(e: WindowEvent): Unit = {}
-  override def windowDeiconified(e: WindowEvent): Unit = {}
-  override def windowOpened(e: WindowEvent): Unit = {}
 }

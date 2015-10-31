@@ -1,5 +1,6 @@
 package farg
 
+import java.net.URL
 import java.awt.Toolkit
 import javax.swing.{JMenuBar, JMenu, KeyStroke}
 import java.awt.event.WindowEvent
@@ -67,18 +68,19 @@ class GridfontMenuBar(gui: GridfontMakerFrame, isMac: Boolean) extends JMenuBar
   gridMenu.add(sortItem)
   gridMenu.addSeparator
 
-  val toggleShowAnchorsItem = MenuItemRef("Hide anchors", mi => {
+  val toggleShowAnchorsItem = MenuItemRef("Hide anchors", menuItem => {
     val p = gui.editPanel
     p.showAnchors = !p.showAnchors
-    mi.setText(if (p.showAnchors) "Hide anchors" else "Show anchors")
+    menuItem.setText(if (p.showAnchors) "Hide anchors" else "Show anchors")
     p.repaint()
   })
   gridMenu.add(toggleShowAnchorsItem)
 
-  val toggleShowCentralZoneItem = MenuItemRef("Show central zone", mi => {
+  val toggleShowCentralZoneItem = MenuItemRef("Hide central zone", menuItem => {
     val p = gui.editPanel
     p.showCentralZone = !p.showCentralZone
-    mi.setText(if (p.showCentralZone) "Hide central zone" else "Show central zone")
+    menuItem.setText(
+      if (p.showCentralZone) "Hide central zone" else "Show central zone")
     p.repaint()
   })
   gridMenu.add(toggleShowCentralZoneItem)
@@ -88,8 +90,10 @@ class GridfontMenuBar(gui: GridfontMakerFrame, isMac: Boolean) extends JMenuBar
   var helpFrame: Option[HelpFrame] = None
   val helpItem = MenuItem("Show instructions", () => {
     if (helpFrame.isEmpty) {
-      val (w, h) = ((getParent.getWidth/3).toInt, (getParent.getHeight*0.75).toInt)
-      helpFrame = Some(new HelpFrame(this, w, h))
+      val screenSize = Toolkit.getDefaultToolkit().getScreenSize()
+      val w = (screenSize.getWidth * 0.35).toInt
+      val h = (screenSize.getHeight * 0.75).toInt
+      helpFrame = Some(new HelpFrame(this, w, h, new URL("file:./help.html")))
     }
   })
   helpMenu.add(helpItem)

@@ -1,44 +1,39 @@
 // TODO
-//  - bug: initial size isn't correct (showing central zone reveals this)
+//**- bug: initial size isn't correct (showing central zone reveals this)
 //  - bug: after copy need to automatically select new letter (drop target)
 //          [Can't reproduce on linux]
 //  - bug: sometimes a click (to add a single stroke) doesn't work. Maybe it's 
 //         because there's a slight drag? I don't know. [Yup. So we just get
-//         the mousePressed/mouseReleased events, and *not* mouseClicked.]
+//         the mousePressed/mouseReleased events, and *not* mouseClicked. In
+//         order to fix this we'd have to add support for adding/deleting
+//         strokes both on a mouse-clicked and on mousePressed/Released events
+//         where the same stroke has been selected the entire time (or theres
+//         just been a small movement (which is better?).]
 //  - bug: some actions can't be undone (just haven't added them yet)
 //
 //  - EditPanel
 //    - allow drag to locations *before* first letter and *after* last one
+//    - better animation of dragging a letter (copy and move); animate sort
+//    - add drag instructions on mouse-over bottom area
 //
 //  - EditableLetter
-//    - have to have the ability to override horizontal offet and width (float)
+//    - have to have the ability to manually override horizontal offet and 
+//      width (float)
 //
 //  - GridfontTextArea
-//    - add highlight/cut/paste
+//    - add highlight, cut, paste, move-by-word, etc.
 //    - have configurable inter-letter/row spacing
 //
-//  - maybe save example text font-size/spacing/etc to .gf
-//
-//  - check all class imports and with GlobalFont
 //  - general code review
-//    + ActionStack.scala
-//    + AlphabetPanel.scala
-//    + CommandLineParser.scala
-//    + Letter.scala
-//    + Font.scala
 //    - EditPanel.scala
 //    - EditableLetter.scala
-//    - GridfontMaker.scala
 //    - GridfontMakerFrame.scala
 //    - GridfontTextArea.scala
-//    - GuiUtil.scala
-//    - HelpFrame.scala
-//    - MacOSXInit.scala
-//    - MenuBar.scala
-//    - NamePanel.scala
+//
+//  - check all class imports and with GlobalFont
 //  - use adapters instead of listeners for brevity
 //  - test on newer windows, newer mac
-//  - slim down gf file by changing stroke to (Int,Int)
+//  - maybe save example text font-size/spacing/etc to .gf
 //
 //  - JWrapper
 //    - mounting mac installer doesn't automatically show drive in finder
@@ -81,8 +76,8 @@ object GridfontMaker {
       case _: CommandLineArgError => System.exit(-1)
     }
 
-    val lcOSName = System.getProperty("os.name").toLowerCase()
-    val isMac = lcOSName.startsWith("mac os x")
+    val lowercaseOSName = System.getProperty("os.name").toLowerCase()
+    val isMac = lowercaseOSName.startsWith("mac os x")
     if (isMac) {
       // NOTE: *both* of these must be done before the frame is created
       System.setProperty("apple.laf.useScreenMenuBar", "true")

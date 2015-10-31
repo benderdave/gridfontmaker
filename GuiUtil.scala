@@ -1,6 +1,6 @@
 package farg
 
-import java.awt.event.{KeyEvent, KeyListener, MouseEvent, MouseListener, 
+import java.awt.event.{KeyEvent, KeyAdapter, MouseEvent, MouseListener, 
  ItemListener, ItemEvent, ActionListener, ActionEvent}
 import javax.swing.event.{ChangeEvent, ChangeListener, DocumentListener,
  DocumentEvent}
@@ -79,15 +79,14 @@ object GUIUtils {
         if (source.isInstanceOf[JTextField]) f(text.getText())
       }
     })
-    text.addKeyListener(new KeyListener {
-      override def keyTyped(e: KeyEvent): Unit = {}
-      override def keyPressed(e: KeyEvent): Unit = {}
+    text.addKeyListener(new KeyAdapter {
       override def keyReleased(e: KeyEvent): Unit = f(text.getText())
     })
     text
   }
 
-  def TextArea(initialText: String, rows: Int, cols: Int, f: (String) => Any): JTextArea = {
+  def TextArea(initialText: String, rows: Int, cols: Int, f: (String) => Any):
+      JTextArea = {
     val text = new JTextArea(initialText, rows, cols)
     text.setLineWrap(true)
     text.setWrapStyleWord(true)

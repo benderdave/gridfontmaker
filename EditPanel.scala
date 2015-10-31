@@ -28,7 +28,7 @@ class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont wi
 
   var shiftPressed: Boolean = false
   var showAnchors: Boolean = true
-  var showCentralZone: Boolean = false
+  var showCentralZone: Boolean = true
 
   var selectedLetter: Option[EditableLetter] = None
   var draggingLetter: Option[EditableLetter] = None
