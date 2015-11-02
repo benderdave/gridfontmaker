@@ -13,7 +13,7 @@ class MacOSXInit extends PlatformSpecificInit {
     macApplication.setAboutHandler(new AboutHandler {
       def handleAbout(e: AboutEvent) {
         JOptionPane.showMessageDialog(frame,
-          "Version 1.2\nWritten by Dave Bender\nFluid Analogies Research Group (FARG)\nIndiana University",
+          "Version 1.3\nWritten by Dave Bender\nFluid Analogies Research Group (FARG)\nIndiana University",
           "GridfontMaker",
           JOptionPane.PLAIN_MESSAGE)
       }
