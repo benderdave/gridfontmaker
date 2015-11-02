@@ -1,7 +1,4 @@
 // TODO
-//**- bug: initial size isn't correct (showing central zone reveals this)
-//  - bug: after copy need to automatically select new letter (drop target)
-//          [Can't reproduce on linux]
 //  - bug: sometimes a click (to add a single stroke) doesn't work. Maybe it's 
 //         because there's a slight drag? I don't know. [Yup. So we just get
 //         the mousePressed/mouseReleased events, and *not* mouseClicked. In

@@ -424,9 +424,8 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     val centralTopLeft = rowColToIndex(centerRow-1, 0)
     val centralLowerRight = rowColToIndex(centerRow+1, NumCols-1)
     val (x, y) = getAnchorPos(centralTopLeft)
-    val cStep = colStep
     g2.setColor(centralZoneColor)
-    g2.fill(new Rectangle2D.Double(x, y, cStep*2, cStep*2))
+    g2.fill(new Rectangle2D.Double(x, y, colStep*2, rowStep*2))
   }
 
   def paintAnchors(g2: Graphics2D): Unit = {

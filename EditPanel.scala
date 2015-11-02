@@ -127,6 +127,7 @@ class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont wi
             yield Stroke(begin, end) 
         }
         dst.observableLetter.changed
+        dst.requestFocusInWindow
       }))
     }
   }
@@ -148,6 +149,7 @@ class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont wi
       }
       revalidate()
       repaint()
+      src.requestFocusInWindow
     }))
   }
 
