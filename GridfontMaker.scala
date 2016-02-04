@@ -1,12 +1,16 @@
 // TODO
+//  - bug: alph display sometimes doesn't resize correctly
+//  - bug: close-all-others hoses alphabet display
 //  - bug: sometimes a click (to add a single stroke) doesn't work. Maybe it's 
 //         because there's a slight drag? I don't know. [Yup. So we just get
 //         the mousePressed/mouseReleased events, and *not* mouseClicked. In
 //         order to fix this we'd have to add support for adding/deleting
 //         strokes both on a mouse-clicked and on mousePressed/Released events
-//         where the same stroke has been selected the entire time (or theres
+//         where the same stroke has been selected the entire time (or there's
 //         just been a small movement (which is better?).]
 //  - bug: some actions can't be undone (just haven't added them yet)
+//  - bug: in rare cases drag (and probably shift-drag) can get stuck, missing
+//          the mouse-release.
 //
 //  - EditPanel
 //    - allow drag to locations *before* first letter and *after* last one
@@ -15,13 +19,13 @@
 //
 //  - EditableLetter
 //    - have to have the ability to manually override horizontal offet and 
-//      width (float)
+//      width (float).
 //
 //  - GridfontTextArea
 //    - add highlight, cut, paste, move-by-word, etc.
-//    - have configurable inter-letter/row spacing
+//    - add configurable inter-letter/row spacing
 //
-//  - general code review
+//  - general code review/refactor
 //    - EditPanel.scala
 //    - EditableLetter.scala
 //    - GridfontMakerFrame.scala
@@ -31,6 +35,7 @@
 //  - use adapters instead of listeners for brevity
 //  - test on newer windows, newer mac
 //  - maybe save example text font-size/spacing/etc to .gf
+//  - figure out a way to view the name of the font using the font
 //
 //  - JWrapper
 //    - mounting mac installer doesn't automatically show drive in finder

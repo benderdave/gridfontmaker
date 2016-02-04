@@ -26,6 +26,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
     Seq[Observer]) extends JPanel with MouseMotionListener with MouseListener 
     with GlobalActionStack {
   import EditableLetter._
+  import EditableLetter.DragEnum._
   import GridfontMaker._
   import GridfontMakerFrame._
 
@@ -52,47 +53,54 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
   addMouseListener(this)
 
   setFocusable(true)
-  addKeyListener(new KeyListener {
-    override def keyPressed(e: KeyEvent): Unit = {
-      if (e.getKeyCode == KeyEvent.VK_SHIFT) up.shiftPressed = true
-      else if (e.getKeyCode == KeyEvent.VK_O) {
-        showStrokeOrder = true
-        repaint()
-      }
-      else if (e.getKeyCode == KeyEvent.VK_UP) nudgeUp
-      else if (e.getKeyCode == KeyEvent.VK_DOWN) nudgeDown
-      else if (e.getKeyCode == KeyEvent.VK_LEFT) nudgeLeft
-      else if (e.getKeyCode == KeyEvent.VK_RIGHT) nudgeRight
-    }
-    override def keyReleased(e: KeyEvent): Unit =
-      if (e.getKeyCode == KeyEvent.VK_SHIFT) up.shiftPressed = false
-      else if (e.getKeyCode == KeyEvent.VK_O) {
-        showStrokeOrder = false
-        repaint()
-      }
-    override def keyTyped(e: KeyEvent): Unit = {
-      if (e.getKeyChar == 'c') clear()
-      else if (e.getKeyChar == 'a') clearOthers
-      else if (e.getKeyChar == 'v') flipY
-      else if (e.getKeyChar == 'h') flipX
-      else if (e.getKeyChar == 'r') rotate
-      else if (e.getKeyChar == 'f')
-        if (hitStroke.nonEmpty)
-          flipStroke(hitStroke.get._1, hitStroke.get._2)
-    }
-  })
+  setupKeyListener
+  setupMenus
 
-  val menuPopup = new JPopupMenu
-  menuPopup.add(MenuItem("FlipX", () => flipX))
-  menuPopup.add(MenuItem("FlipY", () => flipY))
-  menuPopup.add(MenuItem("Rotate 180 degrees", () => rotate))
-  menuPopup.add(MenuItem("Clear", () => clear()))
-  menuPopup.add(MenuItem("Clear all others", () => clearOthers))
-  menuPopup.add(MenuItem("Nudge Up", () => nudgeUp))
-  menuPopup.add(MenuItem("Nudge Down", () => nudgeDown))
-  menuPopup.add(MenuItem("Nudge Left", () => nudgeLeft))
-  menuPopup.add(MenuItem("Nudge Right", () => nudgeRight))
-  setComponentPopupMenu(menuPopup)
+  def setupKeyListener: Unit = {
+    addKeyListener(new KeyListener {
+      override def keyPressed(e: KeyEvent): Unit = {
+        if (e.getKeyCode == KeyEvent.VK_SHIFT) up.shiftPressed = true
+        else if (e.getKeyCode == KeyEvent.VK_O) {
+          showStrokeOrder = true
+          repaint()
+        }
+        else if (e.getKeyCode == KeyEvent.VK_UP) nudgeUp
+        else if (e.getKeyCode == KeyEvent.VK_DOWN) nudgeDown
+        else if (e.getKeyCode == KeyEvent.VK_LEFT) nudgeLeft
+        else if (e.getKeyCode == KeyEvent.VK_RIGHT) nudgeRight
+      }
+      override def keyReleased(e: KeyEvent): Unit =
+        if (e.getKeyCode == KeyEvent.VK_SHIFT) up.shiftPressed = false
+        else if (e.getKeyCode == KeyEvent.VK_O) {
+          showStrokeOrder = false
+          repaint()
+        }
+      override def keyTyped(e: KeyEvent): Unit = {
+        if (e.getKeyChar == 'c') clear()
+        else if (e.getKeyChar == 'a') clearOthers
+        else if (e.getKeyChar == 'v') flipY
+        else if (e.getKeyChar == 'h') flipX
+        else if (e.getKeyChar == 'r') rotate
+        else if (e.getKeyChar == 'f')
+          if (hitStroke.nonEmpty)
+            flipStroke(hitStroke.get._1, hitStroke.get._2)
+      }
+    })
+  }
+
+  def setupMenus: Unit = {
+    val menuPopup = new JPopupMenu
+    menuPopup.add(MenuItem("FlipX", () => flipX))
+    menuPopup.add(MenuItem("FlipY", () => flipY))
+    menuPopup.add(MenuItem("Rotate 180 degrees", () => rotate))
+    menuPopup.add(MenuItem("Clear", () => clear()))
+    menuPopup.add(MenuItem("Clear all others", () => clearOthers))
+    menuPopup.add(MenuItem("Nudge Up", () => nudgeUp))
+    menuPopup.add(MenuItem("Nudge Down", () => nudgeDown))
+    menuPopup.add(MenuItem("Nudge Left", () => nudgeLeft))
+    menuPopup.add(MenuItem("Nudge Right", () => nudgeRight))
+    setComponentPopupMenu(menuPopup)
+  }
 
   def clear(noChange: Boolean = false): Unit = {
     val clearAction = ClearAction(this, () => {
@@ -245,7 +253,7 @@ class EditableLetter(val ch: String, val up: EditPanel, updatables:
         setHitStroke(None)
         val closestAnchor = 
           if (anchorDistances.nonEmpty) anchorDistances.min._2
-          else 0 // FIXME: why do I have to do this?
+          else 0
         val otherEnd = getOtherEndOfPotentialStroke(x, y, closestAnchor)
         if (otherEnd.nonEmpty) {
           setHitPotentialStroke(Some(closestAnchor, otherEnd.get))
@@ -530,9 +538,10 @@ object EditableLetter {
   var anchorSelectDist = 0.0
   var anchorBottomPad = 0
 
-  val NODRAG: Int = 0
-  val DRAGCOPY: Int = 1
-  val DRAGMOVE: Int = 2
+  object DragEnum extends Enumeration {
+    type DragType = Value
+    val NODRAG, DRAGCOPY, DRAGMOVE = Value
+  }
 
   def getPreferredSizeGivenBounds(w: Int, h: Int, pad: Int): Dimension = {
     val newAspect = w.toDouble/h.toDouble

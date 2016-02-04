@@ -13,6 +13,7 @@ import java.util.{Observer, Observable}
 class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont with
     GlobalActionStack {
   import EditableLetter._
+  import EditableLetter.DragEnum._
 
   setBackground(Color.gray)
   setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT)
@@ -34,7 +35,7 @@ class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont wi
   var draggingLetter: Option[EditableLetter] = None
   var dragStart: (Int, Int) = (0,0)
   var dragDelta: (Int, Int) = (0,0)
-  var dragType: Int = NODRAG
+  var dragType: DragType = NODRAG
   var dragTargets: Seq[EditableLetter] = Seq.empty
 
   def clearAll(except: Seq[EditableLetter] = Seq.empty): Unit = {
@@ -64,7 +65,7 @@ class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont wi
     selectedLetter == Some(letter)
 
   def setDraggingLetter(letter: EditableLetter, dragging: Boolean, 
-      dragt: Int = NODRAG, x: Int = 0, y: Int = 0): Unit = {
+      dragt: DragType = NODRAG, x: Int = 0, y: Int = 0): Unit = {
     val currentDraggingLetter = draggingLetter
     if (dragging) {
       draggingLetter = Some(letter)
@@ -102,13 +103,16 @@ class EditPanel(var updatables: Seq[Observer]) extends JPanel with GlobalFont wi
     val maxDist =
       if (draggingLetter.nonEmpty) draggingLetter.get.getHeight/2
       else 0
-    dragTargets = getComponents.map { case letter: EditableLetter =>
+    val targetsAndDistances = getComponents.map { case letter: EditableLetter =>
       val loc = letter.getLocationOnScreen()
       val (cx, cy) = (loc.x + letter.getWidth/2, loc.y + letter.getHeight/2)
       val (mx, my) = (mloc.x, mloc.y-letter.getHeight/2)
       val dist = Math.sqrt((mx-cx)*(mx-cx) + (my-cy)*(my-cy))
       (dist, letter)
-    }.filter(_._1 < maxDist).sortBy(_._1).slice(0,2).unzip._2
+    }
+    val twoClosestDragTargets = targetsAndDistances.filter(_._1 < maxDist)
+      .sortBy(_._1).slice(0,2).unzip._2
+    dragTargets = twoClosestDragTargets
   }
 
   def drag(e: MouseEvent): Unit = {
