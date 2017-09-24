@@ -2,6 +2,8 @@ MACH=$(shell uname)
 
 BUILD_ROOT=./_build
 BUILD_CLASSDIR=$(BUILD_ROOT)/classes
+DISTDIR=./dist
+JWRAPPER_BUILDDIR=./jwrapper/JWrapperBuild
 
 LIB3RD=./lib3rd
 LIBSCALA=./libscala
@@ -54,6 +56,13 @@ gridfontmaker: $(TARGET_FILE) runscala Makefile
 	echo "#! /usr/bin/env bash" > gridfontmaker
 	echo ./runscala farg.GridfontMaker '"$$@"' >> gridfontmaker
 	chmod a+x gridfontmaker
+
+dist:
+	mkdir -p $(DISTDIR)
+	cp $(JWRAPPER_BUILDDIR)/GridfontMaker-linux64-offline.tar $(DISTDIR)
+	cp $(JWRAPPER_BUILDDIR)/GridfontMaker-macos64-offline.dmg $(DISTDIR)
+	cp $(JWRAPPER_BUILDDIR)/GridfontMaker-windows64-offline.exe $(DISTDIR)
+.PHONY: dist
 
 $(BUILD_CLASSDIR):
 	mkdir -p $(BUILD_CLASSDIR)
