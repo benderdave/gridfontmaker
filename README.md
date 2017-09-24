@@ -14,18 +14,16 @@ and each is created on a 3x7 grid of anchors. Only neighboring anchors can be
 connected (45-degree diagonals are allowed), and each stroke is a simple line, without
 decorations or variation in thickness. 
 
-![Image explaining gridfont domain]
-(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/gridfont-defn.png)
+![Image explaining gridfont domain](/images/gridfont-defn.png)
 
 Even under these radical
 restrictions many interesting fonts have been created. The domain's severely limited nature
 propels a font designer quickly into deep experimentation and widespread exploration.
 The following are among the hundreds of gridfonts created by Douglas Hofstadter.
 
-![Sampling of gridfonts]
-(https://raw.githubusercontent.com/benderdave/gridfontmaker/master/images/benzene-etc.png)
+![Sampling of gridfonts](/images/benzene-etc.png)
 
-The gridfont micro-domain was created for studying *analogy*, the cognitive process
+The gridfont micro-domain was created for studying *analogy-making*, the cognitive process
 that underlies most thinking. (See FARG's [gridfont page](http://cogsci.indiana.edu/gridfonts.html) for work in the gridfont domain by John 
 Rehling and Gary McGraw.) Even so, we've found that designing gridfonts can be a
 creative activity that stands on its own, independent of what the gridfont domain might 
