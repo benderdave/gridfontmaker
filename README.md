@@ -81,7 +81,7 @@ Example fonts are included in the "fonts" directory.
 Features I'm considering adding:
 
 * export to true-type font format (ttf)
-* smoothing via B&eacute;ezier curves
+* smoothing via B&eacute;zier curves
 
 # Problems
 
