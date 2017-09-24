@@ -62,9 +62,9 @@ anything.
 
 * Clone the source
 * Make sure you have a recent version of java
-* Run with "java -jar gridfontmaker.jar".
+* Run with "java -jar gridfontmaker.jar"
 
-# Building and running from source
+## Building and running from source
 
 If you'd prefer to build GridfontMaker you need a unix-like system with
 *make*, *java*, and *scala*.
@@ -81,6 +81,7 @@ Example fonts are included in the "fonts" directory.
 Features I'm considering adding:
 
 * export to true-type font format (ttf)
+* smoothing via B&eacute;ezier curves
 
 # Problems
 
