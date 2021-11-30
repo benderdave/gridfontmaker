@@ -86,9 +86,7 @@ Features I'm considering adding:
 # Problems
 
 If you have any problems, questions, bug-reports, requests, or comments, feel free to email me at
-dcbender@indiana.edu. (However, I can't promise I'll be quick to respond, as
-I'm working on my dissertation.) If you create any interesting fonts, please
-share them!
+davecbender@gmail.com. If you create any interesting fonts, please share them!
 
 # Legal
 
